@@ -39,13 +39,34 @@ const useStyles = makeStyles(theme => ({
   }));
 
 export default _ => {
-    const classes = useStyles();
-
-    const [search, setSearch] = useState("");
+    
 
     useEffect(_ => {
         document.title = "Dashboard";
     }, [])
+
+    
+
+    return (
+        <div className="dash-container">
+            <div className="title">
+                <h1>Your Inbox - ({"50"})</h1>
+                
+            </div>
+            <div className="emails">
+                <SearchHeader />
+                <div className="body">
+                
+                </div>
+            </div>
+        </div>
+    );
+}
+
+const SearchHeader = props => {
+    const classes = useStyles();
+
+    const [search, setSearch] = useState("");
 
     const handleChange = e => {
         setSearch(e.currentTarget.value)
@@ -56,39 +77,29 @@ export default _ => {
     }
 
     return (
-        <div className="dash-container">
-            <div className="title">
-                <h1>Your Inbox - ({"50"})</h1>
+        <div className="header">
+            <Paper>
+                <IconButton disableFocusRipple disableTouchRipple>
+                    <Search />
+                </IconButton>
+                <InputBase 
+                    variant = "outlined" 
+                    className={classes.textField} 
+                    value={search} 
+                    onChange={handleChange} 
+                    placeholder = "Search"
+                />
+                <IconButton disableFocusRipple disableTouchRipple onClick = {resetSearch}>
+                    <Cancel />
+                </IconButton>
+            </Paper>
+            <div>
                 
             </div>
-            <div className="emails">
-                <div className="header">
-                    <Paper>
-                        <IconButton disableFocusRipple disableTouchRipple>
-                            <Search />
-                        </IconButton>
-                        <InputBase 
-                            variant = "outlined" 
-                            className={classes.textField} 
-                            value={search} 
-                            onChange={handleChange} 
-                            placeholder = "Search"
-                        />
-                        <IconButton disableFocusRipple disableTouchRipple onClick = {resetSearch}>
-                            <Cancel />
-                        </IconButton>
-                    </Paper>
-                    <div>
-                        
-                    </div>
-                    <Button variant="contained" color="primary" style={{ width: 250 }}>Generate Email</Button>
-                </div>
-                <div className="body">
-
-                </div>
-            </div>
+            <Button variant="contained" color="primary" style={{ width: 250 }}>Generate Email</Button>
         </div>
     );
+    
 }
 
 /*function generateRandomName(length) {

@@ -13,6 +13,7 @@
 .dash-container .title h1 {
     margin: 10px 0;
     font-size: 2rem;
+    color: white;
 }
 
 .dash-container .emails {
@@ -23,12 +24,20 @@
 
 .dash-container .emails .header {
     display: flex;
-    border: 1px solid lightgray;
     padding: 25px;
     justify-content: space-between;
-    background-color: white;
+    background-color: #2a2a2e;
+    box-shadow: 0 0 8px black;
 }
 
 .dash-container .title button .MuiButton-label {
     font-size: 1rem;
+}
+
+.MuiPaper-elevation1 {
+    background-color: #38383d !important
+}
+
+.MuiIconButton-root {
+    color: white !important;
 }

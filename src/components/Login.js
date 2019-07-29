@@ -13,7 +13,7 @@ export default _ => {
         <>
             <Nav isLogin />
             <div className="login-container">
-                <h1>SpoofMail</h1>
+                <h1>Logo here</h1>
                 <div className={"info " + (isLogin ? "isLogin" : "isSignup")}>
                     <div className="login-choice">
                         <div className={isLogin ? "active" : ""} onClick={_ => setIsLogin(true)} left="true">Login</div>
@@ -94,7 +94,7 @@ const LoginComponent = props => {
 
             <p style = {{ color: "red" }}>{error ? "Username or password incorrect" : ""}</p>
 
-            <Button variant="outlined" color="primary" type = "submit">
+            <Button variant="contained" color="primary" type = "submit">
                 {requested ? "Checking..." : "Log in"}
             </Button>
         </form>
@@ -207,7 +207,7 @@ const SignupComponent = props => {
                 helperText = {formError.confirmPassword}
             />
 
-            <Button variant="outlined" color="primary" type = "submit">
+            <Button variant="contained" color="primary" type = "submit">
                 {requested ? "Checking..." : "Create Account"}
             </Button>
         </form>

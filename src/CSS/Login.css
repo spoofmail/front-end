@@ -1,0 +1,96 @@
+body {
+    /*overflow-y: hidden;*/
+    background-color: #eee;
+}
+
+.login-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+    
+}
+
+.login-container h1 {
+    text-align: center;
+    font-size: 5rem;
+    margin-bottom: 150px;
+}
+
+.login-choice {
+    width: 100%;
+    display: flex;
+}
+
+.login-choice div {
+    width: 50%;
+    padding: 10px;
+    font-size: 1.5rem;
+    border: none;
+    outline: none;
+    padding: 10px 0;
+    background-color: transparent;
+    color: #303f9f;
+    border-bottom: 1px solid #303f9f;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.7s, border-color 0.7s;
+}
+
+.login-choice div:hover {
+    background-color: #4359e731;
+    border-color: #4359e7;
+}
+
+.login-choice div[left="true"] {
+    border-top-left-radius: 15px;
+    border-right: 1px solid transparent;
+}
+.login-choice div[left="true"]:hover {
+    border-right: 1px solid #4359e7;
+}
+
+.login-choice div[left="false"] {
+    border-top-right-radius: 15px;
+    border-left: 1px solid transparent;
+}
+.login-choice div[left="false"]:hover {
+    border-left: 1px solid #4359e7;
+}
+
+.login-choice div.active {
+    background-color: #4359e731;
+}
+
+.info {
+    border-radius: 15px;
+    width: 500px;
+    height: auto;
+    transition: height 0.3s;
+    box-shadow: 0 0 16px grey;
+    background-color: white;
+}
+
+.info.isLogin {
+    height: 200px;
+}
+
+.info.isSignup {
+    height: 150px;
+}
+
+.info form {
+    display: flex;
+    flex-direction: column;
+    padding: 25px;
+    border-top: none;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+}
+
+.info form span {
+    font-size: 1.2rem;
+    text-transform: none;
+}

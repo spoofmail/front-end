@@ -8,7 +8,6 @@ import "../CSS/Login.css"
 
 export default _ => {
     const [isLogin, setIsLogin] = useState(true);
-    const [error, setError] = useState("");
 
     return (
         <>
@@ -21,8 +20,7 @@ export default _ => {
                         <div className={!isLogin ? "active" : ""} onClick={_ => setIsLogin(false)} left="false">Signup</div>
                     </div>
 
-                    {isLogin ? <LoginComponent setError={setError} /> : <SignupComponent setError={setError} />}
-                    <h4 style={{ display: error === "" ? "none" : "block" }}>{error}</h4>
+                    {isLogin ? <LoginComponent /> : <SignupComponent />}
                 </div>
             </div>
         </>
@@ -55,7 +53,6 @@ const LoginComponent = props => {
     const handleError = err => {
         console.log(err);
         setRequested(false);
-        props.setError(err);
     }
 
     const handleSubmit = e => {
@@ -78,13 +75,25 @@ const LoginComponent = props => {
 
     return (
         <form onSubmit={handleSubmit}>
-            <TextField label="Username" variant = "outlined">
-                <Input value={form.username} onChange={handleChange} type = "text" name = "username" />
-            </TextField>
-            <TextField label="Token" variant = "outlined">
-                <Input value={form.password} onChange={handleChange} type = "password" name = "password" />
-            </TextField>
+            <TextField 
+                label="Username" 
+                variant = "outlined" 
+                value={form.username} 
+                onChange={handleChange} 
+                type = "text" 
+                name = "username" 
+            />
+            <TextField 
+                label="Password" 
+                variant = "outlined" 
+                value={form.password} 
+                onChange={handleChange} 
+                type = "password" 
+                name = "password" 
+            />
+
             <p style = {{ color: "red" }}>{error ? "Username or password incorrect" : ""}</p>
+
             <Button variant="outlined" color="primary" type = "submit">
                 {requested ? "Checking..." : "Log in"}
             </Button>
@@ -124,7 +133,6 @@ const SignupComponent = props => {
     const handleError = err => {
         console.log(err);
         setRequested(false);
-        props.setError(err);
     }
 
     const handleSubmit = e => {
@@ -198,6 +206,7 @@ const SignupComponent = props => {
                 error = {formError.confirmPassword !== ""}
                 helperText = {formError.confirmPassword}
             />
+
             <Button variant="outlined" color="primary" type = "submit">
                 {requested ? "Checking..." : "Create Account"}
             </Button>

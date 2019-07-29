@@ -1,14 +1,13 @@
 .navigation {
     position: sticky;
     top: 0;
-    background-color: white;
+    background-color: #2a2a2e;
     height: 50px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid gray;
     padding: 10px 0;
-    box-shadow: 0 1px 5px grey;
+    box-shadow: 0 1px 5px black;
     z-index: 100000000;
 }
 
@@ -19,11 +18,11 @@
     border: 1px solid transparent;
     padding: 2px 15px;
     transition: border-radius 0.3s, border-color 0.3s;
-    color: black;
+    color: white;
 }
 
 .navigation a:hover {
-    border: 1px solid black;
+    border: 1px solid white;
     border-radius: 5px;
 }
 
@@ -37,6 +36,7 @@
     left: 50%;
     transform: translateX(-50%);
     margin: 0;
+    color: white;
 }
 
 .navigation h3.active {

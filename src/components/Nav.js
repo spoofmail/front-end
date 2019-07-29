@@ -21,7 +21,7 @@ export default props => {
     const _renderSignOut = _ => {
         if (props.isLogin) return <></>;
         else return (
-            <Button variant = "outlined" color = "primary" onClick = {handleLogOut}>Sign out</Button>
+            <Button variant = "contained" color = "primary" onClick = {handleLogOut}>Sign out</Button>
         );
     }
 

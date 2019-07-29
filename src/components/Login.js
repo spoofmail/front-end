@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Nav from "./Nav";
-import { TextField, Input, Button } from "@material-ui/core";
+import { TextField, Button } from "@material-ui/core";
 
 import history from "../history";
 
@@ -44,12 +44,10 @@ const LoginComponent = props => {
         setForm({ ...form, [name]: value });
     }
 
-    // eslint-disable-next-line
     const handleSuccess = data => {
 
     }
 
-    // eslint-disable-next-line
     const handleError = err => {
         console.log(err);
         setRequested(false);
@@ -119,7 +117,7 @@ const SignupComponent = props => {
     }, [])
 
     const handleChange = e => {
-        let { name, value } = e.target; // Future expandability for username
+        let { name, value } = e.target;
 
         value = value.trim();
 

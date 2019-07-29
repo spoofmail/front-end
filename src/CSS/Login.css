@@ -74,11 +74,11 @@ body {
 }
 
 .info.isLogin {
-    height: 200px;
+    height: 325px;
 }
 
 .info.isSignup {
-    height: 150px;
+    height: 400px;
 }
 
 .info form {
@@ -93,4 +93,12 @@ body {
 .info form span {
     font-size: 1.2rem;
     text-transform: none;
+}
+
+.MuiFormControl-root {
+    margin: 5px 0 !important;
+}
+
+.MuiButton-root {
+    margin-top: 10px !important;
 }

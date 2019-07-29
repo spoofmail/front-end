@@ -30,7 +30,11 @@ export default _ => {
 }
 
 const LoginComponent = props => {
-    const [code, setCode] = useState("");
+    const [form, setForm] = useState({
+        username: "",
+        password: ""
+    });
+    const [error, setError] = useState(false);
     const [requested, setRequested] = useState(false);
 
     useEffect(_ => {
@@ -38,8 +42,8 @@ const LoginComponent = props => {
     }, [])
 
     const handleChange = e => {
-        const { value } = e.target; // Future expandability for username
-        setCode(value);
+        const { name, value } = e.target; // Future expandability for username
+        setForm({ ...form, [name]: value });
     }
 
     // eslint-disable-next-line
@@ -74,9 +78,13 @@ const LoginComponent = props => {
 
     return (
         <form onSubmit={handleSubmit}>
-            <TextField label="Token" variant = "outlined" type = "password">
-                <Input value={code} onChange={handleChange} type = "password" />
+            <TextField label="Username" variant = "outlined">
+                <Input value={form.username} onChange={handleChange} type = "text" name = "username" />
             </TextField>
+            <TextField label="Token" variant = "outlined">
+                <Input value={form.password} onChange={handleChange} type = "password" name = "password" />
+            </TextField>
+            <p style = {{ color: "red" }}>{error ? "Username or password incorrect" : ""}</p>
             <Button variant="outlined" color="primary" type = "submit">
                 {requested ? "Checking..." : "Log in"}
             </Button>
@@ -85,11 +93,29 @@ const LoginComponent = props => {
 }
 
 const SignupComponent = props => {
+    const [form, setForm] = useState({
+        username: "",
+        password: "",
+        confirmPassword: ""
+    })
+    const [formError, setError] = useState({
+        username: "",
+        password: "",
+        confirmPassword: ""
+    })
     const [requested, setRequested] = useState(false);
 
     useEffect(_ => {
         document.title = "Signup";
     }, [])
+
+    const handleChange = e => {
+        let { name, value } = e.target; // Future expandability for username
+
+        value = value.trim();
+
+        setForm({ ...form, [name]: value });
+    }
 
     const handleSuccess = data => {
 
@@ -103,10 +129,31 @@ const SignupComponent = props => {
 
     const handleSubmit = e => {
         e.preventDefault();
+        let newErrors = {
+            username: "",
+            password: "",
+            confirmPassword: ""
+        }
 
         setRequested(true);
 
-        fetch(`${window.serverURL}/`, {
+        Object.keys(form).forEach(key => {
+            if(!form[key] || form[key] === "" || form[key].length === 0) {
+                newErrors[key] = "Field cannot be blank";
+            }
+        })
+
+        if(form['username'] !== form['confirmPassword']) {
+            newErrors = {
+                ...newErrors,
+                password: "Passwords dont match",
+                confirmPassword: "Passwords dont match"
+            }
+        }
+
+        setError(newErrors);
+
+        /*fetch(`${window.serverURL}/`, {
             headers: {
                 "Accept": "application/json",
                 "Content-Type": "application/json"
@@ -116,13 +163,43 @@ const SignupComponent = props => {
         })
             .then(res => res.json())
             .then(handleSuccess)
-            .catch(handleError)
+            .catch(handleError)*/
     }
 
     return (
         <form onSubmit={handleSubmit}>
+            <TextField 
+                label="Username" 
+                variant = "outlined" 
+                value={form.username} 
+                onChange={handleChange} 
+                type = "text" 
+                name = "username" 
+                error = {formError.username !== ""}
+                helperText = {formError.username}
+            />
+            <TextField 
+                label="Password" 
+                variant = "outlined" 
+                value={form.password} 
+                onChange={handleChange} 
+                type = "password" 
+                name = "password" 
+                error = {formError.password !== ""}
+                helperText = {formError.password}
+            />
+            <TextField 
+                label="Confirm Password" 
+                variant = "outlined" 
+                value={form.confirmPassword} 
+                onChange={handleChange} 
+                type = "password" 
+                name = "confirmPassword" 
+                error = {formError.confirmPassword !== ""}
+                helperText = {formError.confirmPassword}
+            />
             <Button variant="outlined" color="primary" type = "submit">
-                {requested ? "Checking..." : "Generate New Account"}
+                {requested ? "Checking..." : "Create Account"}
             </Button>
         </form>
     );

@@ -70,14 +70,10 @@ export default props => {
                             <Search />
                         </IconButton>
                         <InputBase 
-                            label="Search" 
                             variant = "outlined" 
                             className={classes.textField} 
                             value={search} 
                             onChange={handleChange} 
-                            classes={{label: "override"}}
-                            icon={<Search />}
-                            iconPosition = "before"
                             placeholder = "Search"
                         />
                         <IconButton disableFocusRipple disableTouchRipple onClick = {resetSearch}>

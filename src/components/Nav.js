@@ -21,7 +21,7 @@ export default props => {
     const _renderHomeButton = _ => {
         if (props.isLogin) return <Link to="/">Home</Link>;
         else return (
-            <Link style = {{ visibility: "hidden" }}>Home</Link>
+            <Link to = "/dashboard" style = {{ visibility: "hidden" }}>Home</Link>
         );
     }
 

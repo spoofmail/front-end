@@ -6,7 +6,7 @@ import history from "../history";
 
 import "../CSS/Login.css"
 
-export default props => {
+export default _ => {
     const [isLogin, setIsLogin] = useState(true);
     const [error, setError] = useState("");
 
@@ -38,14 +38,16 @@ const LoginComponent = props => {
     }, [])
 
     const handleChange = e => {
-        const { name, value } = e.target; // Future expandability for username
+        const { value } = e.target; // Future expandability for username
         setCode(value);
     }
 
+    // eslint-disable-next-line
     const handleSuccess = data => {
 
     }
 
+    // eslint-disable-next-line
     const handleError = err => {
         console.log(err);
         setRequested(false);
@@ -54,12 +56,10 @@ const LoginComponent = props => {
 
     const handleSubmit = e => {
         e.preventDefault();
-        history.push("/dashboard");
-        /*e.preventDefault();
-
         setRequested(true);
+        history.push("/dashboard");
 
-        fetch(`${window.serverURL}/`, {
+        /*fetch(`${window.serverURL}/`, {
             headers: {
                 "Accept": "application/json",
                 "Content-Type": "application/json"

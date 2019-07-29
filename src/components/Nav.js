@@ -1,19 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom"
 
 import { Button } from "@material-ui/core";
-import { Menu, DragHandle } from "@material-ui/icons"
 import history from "../history"
 
 import "../CSS/Nav.css"
 
 export default props => {
-    const [renderMenu, setRenderMenu] = useState(false);
-
-    const handleToggle = _ => {
-        setRenderMenu(!renderMenu);
-    }
-
     const handleLogOut = _ => {
         history.push("/login");
     }
@@ -21,7 +14,7 @@ export default props => {
     const _renderHomeButton = _ => {
         if (props.isLogin) return <Link to="/">Home</Link>;
         else return (
-            <Link to = "/dashboard" style = {{ visibility: "hidden" }}>Home</Link>
+            <Link to = "/dashboard" style = {{ visibility: "hidden" }}></Link>
         );
     }
 

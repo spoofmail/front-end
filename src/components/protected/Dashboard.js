@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Input, Button, Paper, InputBase, IconButton } from "@material-ui/core";
+import { Button, Paper, InputBase, IconButton } from "@material-ui/core";
 import { Search, Cancel } from "@material-ui/icons"
 import { makeStyles } from '@material-ui/core/styles';
 
-import Nav from "../Nav"
-
-import { Parser } from "html-to-react";
-/*const externalize = new Parser();
+/*import { Parser } from "html-to-react";
+const externalize = new Parser();
 { externalize.parse(data.html) }*/
 
 import "../../CSS/Dashboard.css"
@@ -40,7 +38,7 @@ const useStyles = makeStyles(theme => ({
       },
   }));
 
-export default props => {
+export default _ => {
     const classes = useStyles();
 
     const [search, setSearch] = useState("");
@@ -93,7 +91,7 @@ export default props => {
     );
 }
 
-function generateRandomName(length) {
+/*function generateRandomName(length) {
     let a = "abcdefghijklmnopqrstuvwxyz"
 
     let name = ""
@@ -103,4 +101,4 @@ function generateRandomName(length) {
     }
 
     return name;
-}
+}*/

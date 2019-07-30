@@ -10,11 +10,15 @@ const externalize = new Parser();
 import "../../CSS/Dashboard.css"
 
 const addressesList = [
-    { name: "Google", email: `${generateRandomName(16)}@gmail.com`, emails: 24 }
+    { id: 0, name: "Google", email: `${generateRandomName(16)}@gmail.com`, emails: 24 },
+    { id: 1, name: "Twitter", email: `${generateRandomName(16)}@gmail.com`, emails: 12 },
 ]
 
 const emailData = [
-    { from: "google@gmail.com", subject: "Verify Email" }
+    { address_id: 0, from: "google@gmail.com", subject: "Verify Email" },
+    { address_id: 1, from: "tim@gmail.com", subject: "Not " },
+    { address_id: 1, from: "tim@twitter.com", subject: "Hello2 " },
+    { address_id: 1, from: "john@google.com", subject: "Hello3 " },
 ]
 
 const useStyles = makeStyles(theme => ({
@@ -46,12 +50,42 @@ const useStyles = makeStyles(theme => ({
       },
   }));
 
+const fakeFetchAddress = _ => {
+    return new Promise(function(resolve, reject) {
+        setTimeout(_ => resolve(addressesList), 100);
+    })
+}
+
+const fakeFetchEmails = id => {
+    return new Promise(function(resolve, reject) {
+        setTimeout(_ => resolve(emailData.filter(e => e.address_id === id)), 100);
+    })
+}
+
 export default _ => {
     const [addresses, setAddresses] = useState([]);
+    const [emails, setEmails] = useState({});
 
     useEffect(_ => {
         document.title = "Dashboard";
-        setTimeout(_ => setAddresses(addressesList), 1000)
+        fakeFetchAddress().then(data => {
+            let promiseArr = []
+            data.forEach(address => {
+                promiseArr.push(fakeFetchEmails(address.id))
+            })
+
+            Promise.all(promiseArr).then(data2 => {
+                let newEmailObj = {};
+                
+                data2.forEach(e => {
+                    let id = e[0].address_id;
+                    newEmailObj[id] = e;
+                })
+
+                setAddresses(data);
+                setEmails(newEmailObj);
+            })
+        })
     }, [])
 
     return (
@@ -62,7 +96,7 @@ export default _ => {
             </div>
             <div className="emails">
                 <SearchHeader />
-                <AddressList addresses = {addresses}/>
+                <AddressList addresses = {addresses} emails = {emails}/>
             </div>
         </div>
     );
@@ -109,17 +143,20 @@ const SearchHeader = props => {
 
 const AddressList = props => {
 
-
     return (
         <div className="body">
-            { props.addresses.length === 0 ? <h1>Loading Addresses...</h1> : props.addresses.map((e, i) => <Address key = {i} data = {e} />)}
+            { 
+                props.addresses.length === 0 ? 
+                <h1>Loading Addresses...</h1> : 
+                props.addresses.map((e, i) => <Address key = {i} data = {e} emails = {props.emails[e.id]}/>)
+            }
         </div>
     );
 }
 
 const style = { color: "var(--font-color)", fontSize: "2rem", cursor: "pointer" }
 
-const Address = ({ data }) => {
+const Address = ({ data, emails }) => {
     const [expanded, setExpanded] = useState(false);
 
     const _renderChevron = _ => {
@@ -136,7 +173,7 @@ const Address = ({ data }) => {
                 <h3>{data.emails}</h3>
             </div>
             <div className = "email-list" style = {{ display: expanded ? "flex" : "none" }}>
-                <EmailList />
+                <EmailList emails = {emails}/>
             </div>
         </div>
     );
@@ -145,13 +182,8 @@ const Address = ({ data }) => {
 
 
 const EmailList = props => {
-    const [emails, setEmails] = useState([]);
-
-    useEffect(_ => {
-        setTimeout(_ => setEmails(emailData), 1000);
-    }, [])
-
-    return emails.map((e, i) => <Email key = {i} data = {e} />)
+    if(!props.emails) return <></>;
+    return props.emails.map((e, i) => <Email key = {i} data = {e} />)
 }
 
 const Email = ({ data }) => {

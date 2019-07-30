@@ -41,3 +41,50 @@
 .MuiIconButton-root {
     color: var(--font-color) !important;
 }
+
+.body {
+    margin-top: 20px;
+}
+
+.body h1 {
+    color: var(--font-color);
+}
+
+.address {
+    display: flex;
+    flex-direction: column;
+    
+}
+
+.address .title {
+    display: flex;
+    justify-content: flex-start;
+    padding: 15px;
+    background-color: var(--primary-color);
+    box-shadow: 0 0 8px black;
+}
+
+.address .title h3 {
+    color: var(--font-color);
+    margin: 0 25px;
+}
+
+.address .email-list {
+    display: flex;
+    flex-direction: column;
+    padding-left: 25px;
+    margin-top: 7px;
+}
+
+.address .email-list .email {
+    display: flex;
+    background-color: var(--primary-color);
+    box-shadow: 0 0 8px black;
+    cursor: pointer;
+    padding: 15px;
+}
+
+.address .email-list .email h3 {
+    color: var(--font-color);
+    margin: 0 25px;
+}

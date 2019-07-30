@@ -60,7 +60,7 @@ export default props => {
     const _renderRight = _ => {
         return (
             <div style = {{ display: "flex", alignItems: "center" }}>
-                <Opacity style = {{ marginTop: 12, marginRight: 25, cursor: "pointer", color: "var(--font-color)" }} onClick = {handleDarkMode} />
+                <Opacity className = "opacity-style" onClick = {handleDarkMode} />
                 <Button variant = "contained" color = "primary" onClick = {handleLogOut} style = {{ display: props.isLogin ? "none" : "block"}}>Sign out</Button>
             </div>
         );

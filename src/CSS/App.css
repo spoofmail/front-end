@@ -1,3 +1,25 @@
 html {
   font-size: 100%;
 }
+
+/*
+{
+  --primary-color: #2a2a2e;
+  --background-color: #38383d;
+  --button-color: #3f51b5;
+  --button-hover-color: #303f9f;
+  --input-color: black;
+  --font-color: white;
+  --font-color2: black;
+}
+*/
+
+:root {
+  --primary-color: white;
+  --background-color: #eee;
+  --button-color: #3f51b5;
+  --button-hover-color: #303f9f;
+  --input-color: black;
+  --font-color: black;
+  --font-color2: white;
+}

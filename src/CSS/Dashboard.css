@@ -13,6 +13,7 @@
 .dash-container .title h1 {
     margin: 10px 0;
     font-size: 2rem;
+    color: var(--font-color);
 }
 
 .dash-container .emails {
@@ -23,12 +24,80 @@
 
 .dash-container .emails .header {
     display: flex;
-    border: 1px solid lightgray;
     padding: 25px;
     justify-content: space-between;
-    background-color: white;
+    background-color: var(--primary-color);
+    box-shadow: 0 0 8px black;
 }
 
 .dash-container .title button .MuiButton-label {
     font-size: 1rem;
+}
+
+.MuiPaper-elevation1 {
+    background-color: var(--background-color) !important
+}
+
+.MuiIconButton-root {
+    color: var(--font-color) !important;
+}
+
+.body {
+    margin-top: 20px;
+}
+
+.body h1 {
+    color: var(--font-color);
+}
+
+.address {
+    display: flex;
+    flex-direction: column;
+    margin: 5px;
+}
+
+.address .title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: var(--primary-color);
+    box-shadow: 0 0 8px black;
+}
+
+.address .title h3 {
+    color: var(--font-color);
+    margin: 0 25px;
+}
+
+.address .title div {
+    display: flex;
+    align-items: center;
+}
+
+.address .email-list {
+    display: flex;
+    flex-direction: column;
+    padding-left: 25px;
+    margin-top: 7px;
+}
+
+.address .email-list .email {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--primary-color);
+    box-shadow: 0 0 8px black;
+    cursor: pointer;
+    padding: 15px;
+    margin: 5px 0;
+}
+
+.address .email-list .email div {
+    display: flex;
+}
+
+.address .email-list .email h3 {
+    color: var(--font-color);
+    margin: 0 25px;
 }

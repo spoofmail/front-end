@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import Nav from "./Nav";
-import { TextField, Input, Button } from "@material-ui/core";
-
-import history from "../history";
+import { TextField, Button } from "@material-ui/core";
 
 import "../CSS/Login.css"
+
+import history from "../history";
+import Cookies from "universal-cookie";
+let cookies = new Cookies();
 
 export default _ => {
     const [isLogin, setIsLogin] = useState(true);
@@ -13,7 +15,7 @@ export default _ => {
         <>
             <Nav isLogin />
             <div className="login-container">
-                <h1>SpoofMail</h1>
+                <h1>Logo here</h1>
                 <div className={"info " + (isLogin ? "isLogin" : "isSignup")}>
                     <div className="login-choice">
                         <div className={isLogin ? "active" : ""} onClick={_ => setIsLogin(true)} left="true">Login</div>
@@ -44,12 +46,20 @@ const LoginComponent = props => {
         setForm({ ...form, [name]: value });
     }
 
-    // eslint-disable-next-line
-    const handleSuccess = data => {
-
+    const handleSuccess = res => {
+        setRequested(false);
+        if(res.status !== 200) {
+            setError(true);
+        }
+        else {
+            res.json().then(data => {
+                console.log(data);
+                cookies.set("token", data.token);
+                history.push("/dashboard");
+            })
+        }
     }
 
-    // eslint-disable-next-line
     const handleError = err => {
         console.log(err);
         setRequested(false);
@@ -58,19 +68,18 @@ const LoginComponent = props => {
     const handleSubmit = e => {
         e.preventDefault();
         setRequested(true);
-        history.push("/dashboard");
+        setError(false);
 
-        /*fetch(`${window.serverURL}/`, {
+        fetch(`${window.serverURL}/api/auth/login`, {
             headers: {
                 "Accept": "application/json",
                 "Content-Type": "application/json"
             },
             method: "POST",
-            body: JSON.stringify({ code })
+            body: JSON.stringify(form)
         })
-        .then(res => res.json())
         .then(handleSuccess)
-        .catch(handleError)*/
+        .catch(handleError)
     }
 
     return (
@@ -94,7 +103,7 @@ const LoginComponent = props => {
 
             <p style = {{ color: "red" }}>{error ? "Username or password incorrect" : ""}</p>
 
-            <Button variant="outlined" color="primary" type = "submit">
+            <Button variant="contained" color="primary" type = "submit">
                 {requested ? "Checking..." : "Log in"}
             </Button>
         </form>
@@ -119,15 +128,27 @@ const SignupComponent = props => {
     }, [])
 
     const handleChange = e => {
-        let { name, value } = e.target; // Future expandability for username
+        let { name, value } = e.target;
 
         value = value.trim();
 
         setForm({ ...form, [name]: value });
     }
 
-    const handleSuccess = data => {
-
+    const handleSuccess = res => {
+        setRequested(false);
+        if(res.status !== 201 && res.status !== 200) {
+            setError({
+                ...formError,
+                username: "Username taken"
+            });
+        }
+        else {
+            res.json().then(data => {
+                cookies.set("token", data.token);
+                history.push("/dashboard");
+            })
+        }
     }
 
     const handleError = err => {
@@ -151,7 +172,7 @@ const SignupComponent = props => {
             }
         })
 
-        if(form['username'] !== form['confirmPassword']) {
+        if(form['password'] !== form['confirmPassword']) {
             newErrors = {
                 ...newErrors,
                 password: "Passwords dont match",
@@ -161,17 +182,16 @@ const SignupComponent = props => {
 
         setError(newErrors);
 
-        /*fetch(`${window.serverURL}/`, {
+        fetch(`${window.serverURL}/api/auth/register`, {
             headers: {
                 "Accept": "application/json",
                 "Content-Type": "application/json"
             },
             method: "POST",
-            body: JSON.stringify({})
+            body: JSON.stringify({ username: form.username, password: form.password })
         })
-            .then(res => res.json())
-            .then(handleSuccess)
-            .catch(handleError)*/
+        .then(handleSuccess)
+        .catch(handleError)
     }
 
     return (
@@ -207,7 +227,7 @@ const SignupComponent = props => {
                 helperText = {formError.confirmPassword}
             />
 
-            <Button variant="outlined" color="primary" type = "submit">
+            <Button variant="contained" color="primary" type = "submit">
                 {requested ? "Checking..." : "Create Account"}
             </Button>
         </form>

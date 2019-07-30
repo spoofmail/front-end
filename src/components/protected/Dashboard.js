@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button, Paper, InputBase, IconButton } from "@material-ui/core";
 import { Search, Cancel } from "@material-ui/icons"
 import { makeStyles } from '@material-ui/core/styles';
+import Inbox from './Inbox';
 
 /*import { Parser } from "html-to-react";
 const externalize = new Parser();
@@ -84,7 +85,7 @@ export default _ => {
                     <Button variant="contained" color="primary" style={{ width: 250 }}>Generate Email</Button>
                 </div>
                 <div className="body">
-
+                <Inbox />
                 </div>
             </div>
         </div>

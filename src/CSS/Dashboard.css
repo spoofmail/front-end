@@ -13,7 +13,7 @@
 .dash-container .title h1 {
     margin: 10px 0;
     font-size: 2rem;
-    color: white;
+    color: var(--font-color);
 }
 
 .dash-container .emails {
@@ -26,7 +26,7 @@
     display: flex;
     padding: 25px;
     justify-content: space-between;
-    background-color: #2a2a2e;
+    background-color: var(--primary-color);
     box-shadow: 0 0 8px black;
 }
 
@@ -35,9 +35,9 @@
 }
 
 .MuiPaper-elevation1 {
-    background-color: #38383d !important
+    background-color: var(--background-color) !important
 }
 
 .MuiIconButton-root {
-    color: white !important;
+    color: var(--font-color) !important;
 }

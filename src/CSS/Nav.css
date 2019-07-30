@@ -1,7 +1,7 @@
 .navigation {
     position: sticky;
     top: 0;
-    background-color: #2a2a2e;
+    background-color: var(--primary-color);
     height: 50px;
     display: flex;
     justify-content: space-between;
@@ -18,11 +18,11 @@
     border: 1px solid transparent;
     padding: 2px 15px;
     transition: border-radius 0.3s, border-color 0.3s;
-    color: white;
+    color: var(--font-color);
 }
 
 .navigation a:hover {
-    border: 1px solid white;
+    border: 1px solid var(--font-color);
     border-radius: 5px;
 }
 
@@ -36,7 +36,7 @@
     left: 50%;
     transform: translateX(-50%);
     margin: 0;
-    color: white;
+    color: var(--font-color);
 }
 
 .navigation h3.active {

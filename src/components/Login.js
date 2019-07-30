@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 import Nav from "./Nav";
 import { TextField, Button } from "@material-ui/core";
 
-import history from "../history";
-
 import "../CSS/Login.css"
+
+import history from "../history";
+import Cookies from "universal-cookie";
+let cookies = new Cookies();
 
 export default _ => {
     const [isLogin, setIsLogin] = useState(true);
@@ -44,8 +46,18 @@ const LoginComponent = props => {
         setForm({ ...form, [name]: value });
     }
 
-    const handleSuccess = data => {
-
+    const handleSuccess = res => {
+        setRequested(false);
+        if(res.status !== 200) {
+            setError(true);
+        }
+        else {
+            res.json().then(data => {
+                console.log(data);
+                cookies.set("token", data.token);
+                history.push("/dashboard");
+            })
+        }
     }
 
     const handleError = err => {
@@ -56,19 +68,18 @@ const LoginComponent = props => {
     const handleSubmit = e => {
         e.preventDefault();
         setRequested(true);
-        history.push("/dashboard");
+        setError(false);
 
-        /*fetch(`${window.serverURL}/`, {
+        fetch(`${window.serverURL}/api/auth/login`, {
             headers: {
                 "Accept": "application/json",
                 "Content-Type": "application/json"
             },
             method: "POST",
-            body: JSON.stringify({ code })
+            body: JSON.stringify(form)
         })
-        .then(res => res.json())
         .then(handleSuccess)
-        .catch(handleError)*/
+        .catch(handleError)
     }
 
     return (
@@ -124,8 +135,20 @@ const SignupComponent = props => {
         setForm({ ...form, [name]: value });
     }
 
-    const handleSuccess = data => {
-
+    const handleSuccess = res => {
+        setRequested(false);
+        if(res.status !== 201) {
+            setError({
+                ...formError,
+                username: "Username taken"
+            });
+        }
+        else {
+            res.json().then(data => {
+                cookies.set("token", data.token);
+                history.push("/dashboard");
+            })
+        }
     }
 
     const handleError = err => {
@@ -159,17 +182,16 @@ const SignupComponent = props => {
 
         setError(newErrors);
 
-        /*fetch(`${window.serverURL}/`, {
+        fetch(`${window.serverURL}/api/auth/register`, {
             headers: {
                 "Accept": "application/json",
                 "Content-Type": "application/json"
             },
             method: "POST",
-            body: JSON.stringify({})
+            body: JSON.stringify({ username: form.username, password: form.password })
         })
-            .then(res => res.json())
-            .then(handleSuccess)
-            .catch(handleError)*/
+        .then(handleSuccess)
+        .catch(handleError)
     }
 
     return (

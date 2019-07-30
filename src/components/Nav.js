@@ -1,13 +1,16 @@
 import React from "react";
 import { Link } from "react-router-dom"
-
 import { Button } from "@material-ui/core";
-import history from "../history"
 
 import "../CSS/Nav.css"
 
+import history from "../history"
+import Cookies from "universal-cookie";
+let cookies = new Cookies();
+
 export default props => {
     const handleLogOut = _ => {
+        cookies.remove("token");
         history.push("/login");
     }
 

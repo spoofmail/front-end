@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Button, Paper, InputBase, IconButton } from "@material-ui/core";
-import { Search, Cancel, KeyboardArrowDown, KeyboardArrowUp } from "@material-ui/icons"
+import { Search, Cancel, KeyboardArrowDown, KeyboardArrowUp, Trash } from "@material-ui/icons"
 import { makeStyles } from '@material-ui/core/styles';
+
+import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 /*import { Parser } from "html-to-react";
 const externalize = new Parser();
@@ -65,6 +68,7 @@ const fakeFetchEmails = id => {
 export default _ => {
     const [addresses, setAddresses] = useState([]);
     const [emails, setEmails] = useState({});
+    const [emailCount, setEmailCount] = useState(0);
 
     useEffect(_ => {
         document.title = "Dashboard";
@@ -75,15 +79,18 @@ export default _ => {
             })
 
             Promise.all(promiseArr).then(data2 => {
+                let amount = 0;
                 let newEmailObj = {};
                 
                 data2.forEach(e => {
                     let id = e[0].address_id;
                     newEmailObj[id] = e;
+                    amount += e.length;
                 })
 
                 setAddresses(data);
                 setEmails(newEmailObj);
+                setEmailCount(amount);
             })
         })
     }, [])
@@ -91,7 +98,7 @@ export default _ => {
     return (
         <div className="dash-container">
             <div className="title">
-                <h1>Your Inbox - ({"50"})</h1>
+                <h1>Your Inbox - ({emailCount})</h1>
                 
             </div>
             <div className="emails">
@@ -167,10 +174,13 @@ const Address = ({ data, emails }) => {
     return (
         <div className = "address">
             <div className = "title">
-                { _renderChevron() }
-                <h3>{data.name}</h3>
-                <h3>{data.email}</h3>
-                <h3>{data.emails}</h3>
+                <div>
+                    { _renderChevron() }
+                    <h3>{data.name}</h3>
+                    <h3>{data.email}</h3>
+                    <h3>{data.emails}</h3>
+                </div>
+                <Button variant = "outlined" style = {{ color: "red", borderColor: "red", textTransform: "none" }}>Remove</Button>
             </div>
             <div className = "email-list" style = {{ display: expanded ? "flex" : "none" }}>
                 <EmailList emails = {emails}/>
@@ -189,8 +199,11 @@ const EmailList = props => {
 const Email = ({ data }) => {
     return (
         <div className = "email">
-            <h3>From: {data.from}</h3>
-            <h3>Subject: {data.subject}</h3>
+            <div>
+                <h3>From: {data.from}</h3>
+                <h3>Subject: {data.subject}</h3>
+            </div>
+            <FontAwesomeIcon icon = {faTrashAlt} style = {{ color: "red", cursor: "pointer" }} />
         </div>
     );
 }

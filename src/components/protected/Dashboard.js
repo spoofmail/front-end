@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button, Paper, InputBase, IconButton } from "@material-ui/core";
-import { Search, Cancel } from "@material-ui/icons"
+import { Search, Cancel, KeyboardArrowDown, KeyboardArrowUp } from "@material-ui/icons"
 import { makeStyles } from '@material-ui/core/styles';
 
 /*import { Parser } from "html-to-react";
@@ -8,6 +8,14 @@ const externalize = new Parser();
 { externalize.parse(data.html) }*/
 
 import "../../CSS/Dashboard.css"
+
+const addressesList = [
+    { name: "Google", email: `${generateRandomName(16)}@gmail.com`, emails: 24 }
+]
+
+const emailData = [
+    { from: "google@gmail.com", subject: "Verify Email" }
+]
 
 const useStyles = makeStyles(theme => ({
     textField: {
@@ -39,13 +47,12 @@ const useStyles = makeStyles(theme => ({
   }));
 
 export default _ => {
-    
+    const [addresses, setAddresses] = useState([]);
 
     useEffect(_ => {
         document.title = "Dashboard";
+        setTimeout(_ => setAddresses(addressesList), 1000)
     }, [])
-
-    
 
     return (
         <div className="dash-container">
@@ -55,9 +62,7 @@ export default _ => {
             </div>
             <div className="emails">
                 <SearchHeader />
-                <div className="body">
-                
-                </div>
+                <AddressList addresses = {addresses}/>
             </div>
         </div>
     );
@@ -102,7 +107,63 @@ const SearchHeader = props => {
     
 }
 
-/*function generateRandomName(length) {
+const AddressList = props => {
+
+
+    return (
+        <div className="body">
+            { props.addresses.length === 0 ? <h1>Loading Addresses...</h1> : props.addresses.map((e, i) => <Address key = {i} data = {e} />)}
+        </div>
+    );
+}
+
+const style = { color: "var(--font-color)", fontSize: "2rem", cursor: "pointer" }
+
+const Address = ({ data }) => {
+    const [expanded, setExpanded] = useState(false);
+
+    const _renderChevron = _ => {
+        if(!expanded) return <KeyboardArrowDown style = {style} onClick = {_ => setExpanded(true)}/>
+        else return <KeyboardArrowUp style = {style} onClick = {_ => setExpanded(false)}/>
+    }
+
+    return (
+        <div className = "address">
+            <div className = "title">
+                { _renderChevron() }
+                <h3>{data.name}</h3>
+                <h3>{data.email}</h3>
+                <h3>{data.emails}</h3>
+            </div>
+            <div className = "email-list" style = {{ display: expanded ? "flex" : "none" }}>
+                <EmailList />
+            </div>
+        </div>
+    );
+}
+
+
+
+const EmailList = props => {
+    const [emails, setEmails] = useState([]);
+
+    useEffect(_ => {
+        setTimeout(_ => setEmails(emailData), 1000);
+    }, [])
+
+    return emails.map((e, i) => <Email key = {i} data = {e} />)
+}
+
+const Email = ({ data }) => {
+    return (
+        <div className = "email">
+            <h3>From: {data.from}</h3>
+            <h3>Subject: {data.subject}</h3>
+        </div>
+    );
+}
+
+function generateRandomName(length) {
     let a = "abcdefghijklmnopqrstuvwxyz"
 
     let name = ""
@@ -112,4 +173,4 @@ const SearchHeader = props => {
     }
 
     return name;
-}*/
+}

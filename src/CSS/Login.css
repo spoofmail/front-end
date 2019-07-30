@@ -1,6 +1,6 @@
 body {
     /*overflow-y: hidden;*/
-    background-color: #38383d;
+    background-color: var(--background-color);
 }
 
 .login-container {
@@ -30,7 +30,7 @@ body {
     border: none;
     outline: none;
     padding: 10px 0;
-    background-color: #4359e731;
+    background-color: #4359e7b3;
     color: white;
     text-align: center;
     cursor: pointer;
@@ -69,7 +69,7 @@ body {
     height: auto;
     transition: height 0.3s;
     box-shadow: 0 0 16px black;
-    background-color: #2a2a2e;
+    background-color: var(--primary-color);
 }
 
 .info.isLogin {
@@ -103,17 +103,17 @@ body {
 }
 
 .MuiOutlinedInput-notchedOutline {
-    border-color: white !important;
+    border-color: var(--input-color) !important;
 }
 
 .MuiInputBase-input {
-    color: white !important;
+    color: var(--input-color) !important;
 }
 
 .MuiInputLabel-outlined.MuiInputLabel-shrink {
-    color: white !important;
+    color: var(--input-color) !important;
 }
 
 .MuiInputLabel-outlined {
-    color: white !important;
+    color: var(--input-color) !important;
 }

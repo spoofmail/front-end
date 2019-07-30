@@ -137,7 +137,7 @@ const SignupComponent = props => {
 
     const handleSuccess = res => {
         setRequested(false);
-        if(res.status !== 201) {
+        if(res.status !== 201 && res.status !== 200) {
             setError({
                 ...formError,
                 username: "Username taken"
@@ -172,7 +172,7 @@ const SignupComponent = props => {
             }
         })
 
-        if(form['username'] !== form['confirmPassword']) {
+        if(form['password'] !== form['confirmPassword']) {
             newErrors = {
                 ...newErrors,
                 password: "Passwords dont match",

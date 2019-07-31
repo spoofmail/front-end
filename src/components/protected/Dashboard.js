@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { Button, Paper, InputBase, IconButton, TextField } from "@material-ui/core";
 import { Search, Cancel, KeyboardArrowDown, KeyboardArrowUp, Trash } from "@material-ui/icons"
 import { makeStyles } from '@material-ui/core/styles';
@@ -6,11 +6,17 @@ import { makeStyles } from '@material-ui/core/styles';
 import { faTrashAlt, faCopy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+import EmailStore from "../../stores/email-store";
+
+import ReactModal from "react-modal";
+
 /*import { Parser } from "html-to-react";
 const externalize = new Parser();
 { externalize.parse(data.html) }*/
 
 import "../../CSS/Dashboard.css"
+
+ReactModal.setAppElement('#root')
 
 const addressesList = [
     { id: 0, user_id: 0, name: "Google", email: `${generateRandomName(16)}@gmail.com` },
@@ -23,6 +29,21 @@ const emailData = [
     { address_id: 1, from: "tim@twitter.com", subject: "Hello2 " },
     { address_id: 1, from: "john@google.com", subject: "Hello3 " },
 ]
+
+const customStyles = {
+    content : {
+      top                   : '50%',
+      left                  : '50%',
+      right                 : 'auto',
+      bottom                : 'auto',
+      marginRight           : '-50%',
+      transform             : 'translate(-50%, -50%)',
+      backgroundColor: "var(--primary-color)"
+    },
+    overlay: {
+        backgroundColor: "var(--background-color-trans)"
+    }
+  };
 
 const useStyles = makeStyles(theme => ({
     textField: {
@@ -70,6 +91,19 @@ export default _ => {
     const [emails, setEmails] = useState({});
     const [emailCount, setEmailCount] = useState(0);
 
+    const [emailVisible, setEmailVisible] = useState(false);
+    const [emailData, setEmailData] = useState({});
+
+    console.log(emailVisible, emailData);
+
+    const setEmailVisi = value => {
+        setEmailVisible(value);
+    }
+
+    const setEmailContent = data => {
+        setEmailData(data);
+    }
+
     useEffect(_ => {
         document.title = "Dashboard";
         fakeFetchAddress().then(data => {
@@ -96,16 +130,34 @@ export default _ => {
     }, [])
 
     return (
-        <div className="dash-container">
-            <div className="title">
-                <h1>Your Inbox - ({emailCount})</h1>
-                
+        <EmailStore.Provider value = {{ openEmail: _ => setEmailVisi(true), 
+                                        closeEmail: _ => setEmailVisi(false),
+                                        setEmailContent }}>
+            <div className="dash-container">
+                <div className="title">
+                    <h1>Your Inbox - ({emailCount})</h1>
+                    
+                </div>
+                <div className="emails">
+                    <SearchHeader />
+                    <AddressList addresses = {addresses} emails = {emails}/>
+                </div>
+                <ReactModal
+                    isOpen = {emailVisible}
+                    onRequestClose = {_ => setEmailVisi(false)}
+                    style = {customStyles}
+                    contentLabel = {"Email"}
+                >
+                    <div className = "email-view">
+                        <div style = {{ display: "flex" }}>
+                            <h1 style = {{ marginRight: 20 }}>{emailData.from}</h1>
+                            <h1>{emailData.subject}</h1>
+                        </div>
+
+                    </div>
+                </ReactModal>
             </div>
-            <div className="emails">
-                <SearchHeader />
-                <AddressList addresses = {addresses} emails = {emails}/>
-            </div>
-        </div>
+        </EmailStore.Provider>
     );
 }
 
@@ -164,6 +216,8 @@ const AddressList = props => {
 const style = { color: "var(--font-color)", fontSize: "2rem", cursor: "pointer" }
 
 const Address = ({ data, emails }) => {
+    const context = useContext(EmailStore);
+
     const [expanded, setExpanded] = useState(false);
 
     const [nameEdit, setNameEdit] = useState(data.name);
@@ -220,7 +274,7 @@ const Address = ({ data, emails }) => {
                 <Button variant = "outlined" style = {{ color: "red", borderColor: "red", textTransform: "none" }}>Remove</Button>
             </div>
             <div className = "email-list" style = {{ display: expanded ? "flex" : "none" }}>
-                <EmailList emails = {emails}/>
+                <EmailList emails = {emails} context = {context}/>
             </div>
         </div>
     );
@@ -230,12 +284,17 @@ const Address = ({ data, emails }) => {
 
 const EmailList = props => {
     if(!props.emails) return <></>;
-    return props.emails.map((e, i) => <Email key = {i} data = {e} />)
+    return props.emails.map((e, i) => <Email key = {i} data = {e} context = {props.context}/>)
 }
 
-const Email = ({ data }) => {
+const clickEmail = (data, context) => {
+    context.setEmailContent(data);
+    context.openEmail();
+}
+
+const Email = ({ data, context }) => {
     return (
-        <div className = "email">
+        <div className = "email" onClick = {_ => clickEmail(data, context)}>
             <div>
                 <h3>From: {data.from}</h3>
                 <h3>Subject: {data.subject}</h3>

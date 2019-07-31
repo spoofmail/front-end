@@ -15,6 +15,7 @@ let themeData = {
     "true": {
         "--primary-color": "#2a2a2e",
         "--background-color": "#38383d",
+        "--background-color-trans": "#38383dcc",
         "--button-color": "#3f51b5",
         "--button-hover-color": "#303f9f",
         "--input-color": "white",
@@ -24,6 +25,7 @@ let themeData = {
     "false": {
         "--primary-color": "white",
         "--background-color": "#eee",
+        "--background-color-trans": "#eeeeeec2",
         "--button-color": "#3f51b5",
         "--button-hover-color": "#303f9f",
         "--input-color": "black",

@@ -71,7 +71,7 @@ export default props => {
     return (
         <div className="navigation">
             {_renderHomeButton()}
-            <h3 className = {props.isLogin ? "" : "active"}>SpoofMail</h3>
+            <img src = "./spoof-mail-logo.jpg" className = {props.isLogin ? "" : "active"}></img>
             {_renderRight()}
         </div>
     );

@@ -101,3 +101,27 @@
     color: var(--font-color);
     margin: 0 25px;
 }
+
+.email-view {
+    display: flex;
+    flex-direction: column;
+}
+
+.email-view .title {
+    display: flex;
+    flex-direction: column;
+}
+
+.email-view h1 {
+    margin: 0;
+    margin-right: 15px;
+    color: var(--font-color)
+}
+
+.email-view .email-port {
+    margin-top: 15px;
+    background-color: white;
+    border-radius: 15px;
+    padding: 25px;
+    border: 1px solid var(--font-color);
+}

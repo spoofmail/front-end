@@ -10,11 +10,12 @@ import EmailStore from "../../stores/email-store";
 
 import ReactModal from "react-modal";
 
-/*import { Parser } from "html-to-react";
-const externalize = new Parser();
-{ externalize.parse(data.html) }*/
+import sanitizeHTML from "sanitize-html"
+import { Parser } from "html-to-react";
 
 import "../../CSS/Dashboard.css"
+
+const htmlToReact = new Parser();
 
 ReactModal.setAppElement('#root')
 
@@ -24,7 +25,7 @@ const addressesList = [
 ]
 
 const emailData = [
-    { address_id: 0, from: "google@gmail.com", subject: "Verify Email" },
+    { address_id: 0, from: "google@gmail.com", subject: "Verify Email", html: `<div><p style="color:red;">Hello</p></div>` },
     { address_id: 1, from: "tim@gmail.com", subject: "Not " },
     { address_id: 1, from: "tim@twitter.com", subject: "Hello2 " },
     { address_id: 1, from: "john@google.com", subject: "Hello3 " },
@@ -148,16 +149,30 @@ export default _ => {
                     style = {customStyles}
                     contentLabel = {"Email"}
                 >
-                    <div className = "email-view">
-                        <div style = {{ display: "flex" }}>
-                            <h1 style = {{ marginRight: 20 }}>{emailData.from}</h1>
-                            <h1>{emailData.subject}</h1>
-                        </div>
-
-                    </div>
+                    <ViewEmail data = {emailData} />
                 </ReactModal>
             </div>
         </EmailStore.Provider>
+    );
+}
+
+const ViewEmail = ({ data }) => {
+
+    let sanitized = sanitizeHTML(data.html, {
+        allowedTags: sanitizeHTML.defaults.allowedTags.concat([ "img", "h1", "h2" ]),
+        allowedAttributes: { "*": ['style'] }
+    })
+
+    return (
+            <div className = "email-view">
+                <div className = "title">
+                    <h1>From: {data.from}</h1>
+                    <h1>Subject: {data.subject}</h1>
+                </div>
+                <div className = "email-port">
+                    { htmlToReact.parse(sanitized) }
+                </div>
+            </div>
     );
 }
 

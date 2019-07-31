@@ -12,10 +12,13 @@ body {
     
 }
 
-.login-container h1 {
+.login-container img {
     text-align: center;
     font-size: 5rem;
     margin-bottom: 150px;
+    border-radius: 25px;
+    width: 400px;
+
 }
 
 .login-choice {

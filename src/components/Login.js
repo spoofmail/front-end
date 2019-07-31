@@ -15,7 +15,7 @@ export default _ => {
         <>
             <Nav isLogin />
             <div className="login-container">
-                <h1>Logo here</h1>
+                <img src = "./spoof-mail-logo.jpg"></img>
                 <div className={"info " + (isLogin ? "isLogin" : "isSignup")}>
                     <div className="login-choice">
                         <div className={isLogin ? "active" : ""} onClick={_ => setIsLogin(true)} left="true">Login</div>

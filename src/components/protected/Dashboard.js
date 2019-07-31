@@ -13,8 +13,8 @@ const externalize = new Parser();
 import "../../CSS/Dashboard.css"
 
 const addressesList = [
-    { id: 0, name: "Google", email: `${generateRandomName(16)}@gmail.com`, emails: 24 },
-    { id: 1, name: "Twitter", email: `${generateRandomName(16)}@gmail.com`, emails: 12 },
+    { id: 0, user_id: 0, name: "Google", email: `${generateRandomName(16)}@gmail.com` },
+    { id: 1, user_id: 1, name: "Twitter", email: `${generateRandomName(16)}@gmail.com` },
 ]
 
 const emailData = [
@@ -181,7 +181,8 @@ const Address = ({ data, emails }) => {
         else return <h3 onClick = {_ => setEditMode(true)}>{nameEdit}</h3>;
     }
 
-    const handleEditBlur = _ => {
+    const handleEditBlur = e => {
+        e.preventDefault();
         setEditMode(false);
     }
 

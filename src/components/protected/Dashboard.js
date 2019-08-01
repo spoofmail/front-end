@@ -85,11 +85,14 @@ export default _ => {
             })
         }
 
-        interval = setInterval(setAddresseses, 5000);
+        interval = setInterval(setAddresseses, 1000);
         setAddresseses();
 
         return _ => {
             clearInterval(interval);
+            var interval_id = setInterval("", 9999); 
+            for (var i = 1; i < interval_id; i++)
+                    clearInterval(i);
         }
         
     }, [])

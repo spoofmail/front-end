@@ -5,27 +5,27 @@ import EmailStore from "../../../stores/email-store"
 
 import { fetchEmails } from "../Dashboard"
 
+let intervals = {};
+
 const EmailList = props => {
     const context = useContext(EmailStore);
 
     const [emails, setEmails] = useState([]);
-    const [emailInterval, setEmailInterval] = useState(null);
 
     useEffect(_ => {
-        clearInterval(emailInterval);
+        clearInterval(intervals[props.id]);
 
-        setEmailInterval(setInterval(_ => {
+        intervals[props.id] = setInterval(_ => {
             fetchEmails(props.id).then(data => {
-                console.log(data);
                 if(!emails || data.length !== emails.length) {
                     setEmails(data);
                     context.setEmails(props.id, data);
                 }
             })
-        }, 5000))
+        }, 1000)
 
         return _ => {
-            clearInterval(emailInterval);
+            clearInterval(intervals[props.id]);
         }
     }, [])
 

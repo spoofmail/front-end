@@ -3,7 +3,6 @@ import Address from './Adress';
 
 
 export const AddressList = props => {
-    console.log(props);
     let reverse = Array.from(props.addresses).reverse();
     return (
         <div className="body">

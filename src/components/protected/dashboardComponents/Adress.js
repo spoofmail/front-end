@@ -8,6 +8,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { faCopy } from "@fortawesome/free-solid-svg-icons";
 
+import Cookies from "universal-cookie";
+let cookies = new Cookies();
+
 const style = { color: "var(--font-color)", fontSize: "2rem", cursor: "pointer" }
 
 const Address = ({ data, emails, id }) => {
@@ -56,6 +59,17 @@ const Address = ({ data, emails, id }) => {
         navigator.clipboard.writeText(data.addressname);
     }
 
+    const onRemove = _ => {
+        fetch(`${window.serverURL}/api/addresses/${id}`, {
+            headers: {
+                'Authorization': cookies.get("token"),
+            },
+            method: "DELETE"
+        }).then(res => res.json()).then(data => {
+            console.log(data);
+        })
+    }
+
     return (
         <div className="address">
             <div className="title">
@@ -65,7 +79,7 @@ const Address = ({ data, emails, id }) => {
                     {_renderEmail()}
                     <h3>{data.emails}</h3>
                 </div>
-                <Button variant="outlined" style={{ color: "red", borderColor: "red", textTransform: "none" }}>Remove</Button>
+                <Button variant="outlined" style={{ color: "red", borderColor: "red", textTransform: "none" }} onClick = {onRemove}>Remove</Button>
             </div>
             <div className="email-list" style={{ display: expanded ? "flex" : "none" }}>
                 <EmailList context={context} id = {id}/>

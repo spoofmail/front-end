@@ -4,16 +4,33 @@ import sanitizeHTML from "sanitize-html"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { faTrashAlt} from "@fortawesome/free-solid-svg-icons";
+
 import { Parser } from "html-to-react";
+import Cookies from "universal-cookie";
+
+let cookies = new Cookies();
 const htmlToReact = new Parser();
+
 const Email = ({ data, context }) => {
+
+    const deleteEmail = _ => {
+        fetch(`${window.serverURL}/api/messages/${data.id}`, {
+            headers: {
+                'Authorization': cookies.get("token"),
+            },
+            method: "DELETE"
+        }).then(res => res.json()).then(data => {
+            console.log(data);
+        })
+    }
+
     return (
         <div className = "email" onClick = {_ => clickEmail(data, context)}>
             <div>
                 <h3>From: {data.from}</h3>
                 <h3>Subject: {data.subject}</h3>
             </div>
-            <FontAwesomeIcon icon = {faTrashAlt} style = {{ color: "red", cursor: "pointer" }} />
+            <FontAwesomeIcon icon = {faTrashAlt} style = {{ color: "red", cursor: "pointer" }} onClick = {deleteEmail} />
         </div>
     );
 }

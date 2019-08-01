@@ -17,7 +17,11 @@ const EmailList = props => {
 
         intervals[props.id] = setInterval(_ => {
             fetchEmails(props.id).then(data => {
-                if(!emails || data.length !== emails.length) {
+                if(!data || data.length === 0) {
+                    setEmails([]);
+                    context.setEmails(props.id, []);
+                }
+                else if(!emails || data.length !== emails.length) {
                     setEmails(data);
                     context.setEmails(props.id, data);
                 }

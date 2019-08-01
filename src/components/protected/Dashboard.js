@@ -80,7 +80,10 @@ export default _ => {
 
         const setAddresseses = _ => {
             fetchAdresses().then(data => {
-                if(data.length !== addresses.length)
+                if(!data || data.length === 0) {
+                    setAddresses([]);
+                }
+                else if(data.length !== addresses.length)
                     setAddresses(data);
             })
         }

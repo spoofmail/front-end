@@ -14,6 +14,9 @@ import sanitizeHTML from "sanitize-html"
 import { Parser } from "html-to-react";
 
 import "../../CSS/Dashboard.css"
+import Cookies from "universal-cookie";
+
+let cookies = new Cookies();
 
 const htmlToReact = new Parser();
 
@@ -75,17 +78,31 @@ const useStyles = makeStyles(theme => ({
       },
   }));
 
-const fakeFetchAddress = _ => {
+const fetchAdresses = _ => {
     return new Promise(function(resolve, reject) {
-        setTimeout(_ => resolve(addressesList), 100);
+        fetch(`${window.serverURL}/api/addresses`, {
+            headers: {
+                'Authorization': cookies.get("token")
+            }
+        }).then(res => res.json()).then(data => {
+            resolve(data);
+        })
     })
 }
 
-const fakeFetchEmails = id => {
+const fetchEmails = id => {
     return new Promise(function(resolve, reject) {
-        setTimeout(_ => resolve(emailData.filter(e => e.address_id === id)), 100);
+        fetch(`${window.serverURL}/api/messages/${id}`, {
+            headers: {
+                'Authorization': cookies.get("token")
+            }
+        }).then(res => res.json()).then(data => {
+            resolve(data);
+        })
     })
 }
+
+let interval = null;
 
 export default _ => {
     const [addresses, setAddresses] = useState([]);
@@ -94,8 +111,6 @@ export default _ => {
 
     const [emailVisible, setEmailVisible] = useState(false);
     const [emailData, setEmailData] = useState({});
-
-    console.log(emailVisible, emailData);
 
     const setEmailVisi = value => {
         setEmailVisible(value);
@@ -107,27 +122,55 @@ export default _ => {
 
     useEffect(_ => {
         document.title = "Dashboard";
-        fakeFetchAddress().then(data => {
-            let promiseArr = []
-            data.forEach(address => {
-                promiseArr.push(fakeFetchEmails(address.id))
-            })
 
-            Promise.all(promiseArr).then(data2 => {
-                let amount = 0;
-                let newEmailObj = {};
-                
-                data2.forEach(e => {
-                    let id = e[0].address_id;
-                    newEmailObj[id] = e;
-                    amount += e.length;
+        clearInterval(interval);
+        interval = null;
+
+        const setAddresseses = _ => {
+            fetchAdresses().then(data => {
+                let promiseArr = []
+                data.forEach(address => {
+                    promiseArr.push(fetchEmails(address.id))
                 })
-
-                setAddresses(data);
-                setEmails(newEmailObj);
-                setEmailCount(amount);
+    
+                Promise.all(promiseArr).then(data2 => {
+                    let amount = 0;
+                    let newEmailObj = {};
+                    
+                    if(!data2 || data2.length === 0) {
+                        setAddresses(data);
+                    }
+                    else {
+                        console.log(data2)
+                        data2.forEach(e => {
+                            if(!e || e.length === 0) {
+    
+                            }
+                            else {
+                                let id = e[0].address_id;
+                                console.log(id)
+                                newEmailObj[id] = e;
+                                amount += e.length;
+                            }
+                        })
+                        
+                        if(data.length !== addresses.length)
+                            setAddresses(data);
+                        setEmails(newEmailObj);
+                        setEmailCount(amount);
+                    }
+                    
+                })
             })
-        })
+        }
+
+        interval = setInterval(setAddresseses, 5000);
+        setAddresseses();
+
+        return _ => {
+            clearInterval(interval);
+        }
+        
     }, [])
 
     return (
@@ -141,7 +184,7 @@ export default _ => {
                 </div>
                 <div className="emails">
                     <SearchHeader />
-                    <AddressList addresses = {addresses} emails = {emails}/>
+                    <AddressList addresses = {addresses} emails = {emails} />
                 </div>
                 <ReactModal
                     isOpen = {emailVisible}
@@ -159,8 +202,8 @@ export default _ => {
 const ViewEmail = ({ data }) => {
 
     let sanitized = sanitizeHTML(data.html, {
-        allowedTags: sanitizeHTML.defaults.allowedTags.concat([ "img", "h1", "h2" ]),
-        allowedAttributes: { "*": ['style'] }
+        allowedTags: sanitizeHTML.defaults.allowedTags.concat([ "img", "h1", "h2", "a" ]),
+        allowedAttributes: { "*": ['style', "href"] }
     })
 
     return (
@@ -180,6 +223,10 @@ const SearchHeader = props => {
     const classes = useStyles();
 
     const [search, setSearch] = useState("");
+    const [form, setForm] = useState({
+        name: ""
+    });
+    const [generateVisi, setGenerateVisi] = useState(false);
 
     const handleChange = e => {
         setSearch(e.currentTarget.value)
@@ -189,40 +236,77 @@ const SearchHeader = props => {
         setSearch("")
     }
 
+    const handleNameChange = e => {
+        let { name, value } = e.target;
+        setForm({ ...form, [name]: value });
+    }
+
+    const handleAddressSubmit = e => {
+        e.preventDefault();
+
+        fetch(`${window.serverURL}/api/addresses`, {
+            headers: {
+                'Authorization': cookies.get("token"),
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            },
+            method: "POST",
+            body: JSON.stringify({ addresstag: form.name })
+        }).then(res => res.json()).then(data => {
+            console.log(data);
+        })
+    }
+
     return (
-        <div className="header">
-            <Paper>
-                <IconButton disableFocusRipple disableTouchRipple>
-                    <Search />
-                </IconButton>
-                <InputBase 
-                    variant = "outlined" 
-                    className={classes.textField} 
-                    value={search} 
-                    onChange={handleChange} 
-                    placeholder = "Search"
-                />
-                <IconButton disableFocusRipple disableTouchRipple onClick = {resetSearch}>
-                    <Cancel />
-                </IconButton>
-            </Paper>
-            <div>
-                
+        <>
+            <div className="header">
+                <Paper>
+                    <IconButton disableFocusRipple disableTouchRipple>
+                        <Search />
+                    </IconButton>
+                    <InputBase 
+                        variant = "outlined" 
+                        className={classes.textField} 
+                        value={search} 
+                        onChange={handleChange} 
+                        placeholder = "Search"
+                    />
+                    <IconButton disableFocusRipple disableTouchRipple onClick = {resetSearch}>
+                        <Cancel />
+                    </IconButton>
+                </Paper>
+                <div>
+                    
+                </div>
+                <Button variant="contained" color="primary" style={{ width: 250 }} onClick = {_ => setGenerateVisi(true)}>Generate Email</Button>
             </div>
-            <Button variant="contained" color="primary" style={{ width: 250 }}>Generate Email</Button>
-        </div>
+            <ReactModal
+                    isOpen = {generateVisi}
+                    onRequestClose = {_ => setGenerateVisi(false)}
+                    style = {customStyles}
+                    contentLabel = {"Generate Address"}
+                >
+                <form onSubmit = {handleAddressSubmit}>
+                    <TextField name = "name" value = {form.name} onChange = {handleNameChange}  />
+                    <Button variant = "contained" color = "primary" type = "submit">Generate</Button>
+                </form>
+            </ReactModal>
+        </>
     );
     
 }
 
 const AddressList = props => {
+    
+
+    let reverser = Array.from(props.addresses).reverse();
 
     return (
         <div className="body">
             { 
                 props.addresses.length === 0 ? 
                 <h1>Loading Addresses...</h1> : 
-                props.addresses.map((e, i) => <Address key = {i} data = {e} emails = {props.emails[e.id]}/>)
+                reverser.map((e, i) => <Address key = {i} data = {e} emails = {props.emails[e.id]}/>)
             }
         </div>
     );
@@ -235,7 +319,7 @@ const Address = ({ data, emails }) => {
 
     const [expanded, setExpanded] = useState(false);
 
-    const [nameEdit, setNameEdit] = useState(data.name);
+    const [nameEdit, setNameEdit] = useState(data.addresstag);
     const [editMode, setEditMode] = useState(false);
 
     const [hoverMode, setHoverMode] = useState(false);
@@ -260,8 +344,8 @@ const Address = ({ data, emails }) => {
     }
 
     const _renderEmail = _ => {
-        if(hoverMode) return <h3 onMouseLeave = {handleMouseLeave} style = {{ cursor: "pointer", border: "1px solid var(--font-color)", padding: 5 }} onClick = {handleHoverClick}>{data.email} <FontAwesomeIcon icon = {faCopy} /></h3>;
-        else return <h3 onMouseOver = {handleMouseOver} >{data.email}</h3>;
+        if(hoverMode) return <h3 onMouseLeave = {handleMouseLeave} style = {{ cursor: "pointer", border: "1px solid var(--font-color)", padding: 5 }} onClick = {handleHoverClick}>{data.addressname} <FontAwesomeIcon icon = {faCopy} /></h3>;
+        else return <h3 onMouseOver = {handleMouseOver} >{data.addressname}</h3>;
     }
 
     const handleMouseOver = _ => {
@@ -273,7 +357,7 @@ const Address = ({ data, emails }) => {
     }
 
     const handleHoverClick = _ => {
-        navigator.clipboard.writeText(data.email);
+        navigator.clipboard.writeText(data.addressname);
         alert("Copied to clipboard");
     }
 
@@ -298,8 +382,41 @@ const Address = ({ data, emails }) => {
 
 
 const EmailList = props => {
-    if(!props.emails) return <></>;
-    return props.emails.map((e, i) => <Email key = {i} data = {e} context = {props.context}/>)
+    const [emails, setEmails] = useState(props.emails);
+    const [emailInterval, setEmailInterval] = useState(null);
+
+    useEffect(_ => {
+        clearInterval(emailInterval);
+
+        setEmailInterval(setInterval(_ => {
+            let id = emails[0].address_id;
+
+            fetchEmails(id).then(data => {
+                console.log("called");
+                if(data.length !== emails.length) {
+                    //setEmails(data);
+                    console.log("difference");
+                }
+            })
+        }, 5000))
+
+        return _ => {
+            clearInterval(emailInterval);
+        }
+    }, [])
+
+
+    if(!emails) return <></>;
+    else {
+
+        let reversed = Array.from(props.emails).reverse();
+
+        if(emails.length !== 0)
+            return (
+                reversed.map((e, i) => <Email key = {i} data = {e} context = {props.context}/>)
+            )
+        else return <h1>No Emails here</h1>
+    }
 }
 
 const clickEmail = (data, context) => {

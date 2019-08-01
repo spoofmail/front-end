@@ -228,7 +228,7 @@ const SignupComponent = props => {
             />
 
             <Button variant="contained" color="primary" type = "submit">
-                {requested ? "Checking..." : "Create Account"}
+                {requested ? "Creating account..." : "Create Account"}
             </Button>
         </form>
     );

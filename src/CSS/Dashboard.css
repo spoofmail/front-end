@@ -105,6 +105,8 @@
 .email-view {
     display: flex;
     flex-direction: column;
+    max-width: 700px;
+    max-height: 600px;
 }
 
 .email-view .title {
@@ -124,4 +126,6 @@
     border-radius: 15px;
     padding: 25px;
     border: 1px solid var(--font-color);
+    overflow: scroll;
+    max-width: 700px;
 }

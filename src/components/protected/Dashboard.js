@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import { Button, Paper, InputBase, IconButton, TextField } from "@material-ui/core";
 import { Search, Cancel, KeyboardArrowDown, KeyboardArrowUp, Trash } from "@material-ui/icons"
-import { makeStyles } from '@material-ui/core/styles';
 
 import { faTrashAlt, faCopy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,70 +9,20 @@ import EmailStore from "../../stores/email-store";
 
 import ReactModal from "react-modal";
 
+
+import SearchHeader from './dashboardComponents/SearchHeader';
+
 import sanitizeHTML from "sanitize-html"
 import { Parser } from "html-to-react";
 
+import {addressesList, emailData} from './DummyData';
+
 import "../../CSS/Dashboard.css"
+import {customStyles} from './customStyles';
 
 const htmlToReact = new Parser();
 
 ReactModal.setAppElement('#root')
-
-const addressesList = [
-    { id: 0, user_id: 0, name: "Google", email: `${generateRandomName(16)}@gmail.com` },
-    { id: 1, user_id: 1, name: "Twitter", email: `${generateRandomName(16)}@gmail.com` },
-]
-
-const emailData = [
-    { address_id: 0, from: "google@gmail.com", subject: "Verify Email", html: `<div><p style="color:red;">Hello</p></div>` },
-    { address_id: 1, from: "tim@gmail.com", subject: "Not " },
-    { address_id: 1, from: "tim@twitter.com", subject: "Hello2 " },
-    { address_id: 1, from: "john@google.com", subject: "Hello3 " },
-]
-
-const customStyles = {
-    content : {
-      top                   : '50%',
-      left                  : '50%',
-      right                 : 'auto',
-      bottom                : 'auto',
-      marginRight           : '-50%',
-      transform             : 'translate(-50%, -50%)',
-      backgroundColor: "var(--primary-color)"
-    },
-    overlay: {
-        backgroundColor: "var(--background-color-trans)"
-    }
-  };
-
-const useStyles = makeStyles(theme => ({
-    textField: {
-        marginLeft: theme.spacing(1),
-        marginRight: theme.spacing(1),
-        width: 250,
-      },
-      resize: {
-          fontSize: "2rem"
-      },
-      root: {
-        padding: '2px 4px',
-        display: 'flex',
-        alignItems: 'center',
-        width: 400,
-      },
-      input: {
-        marginLeft: 8,
-        flex: 1,
-      },
-      iconButton: {
-        padding: 10,
-      },
-      divider: {
-        width: 1,
-        height: 28,
-        margin: 4,
-      },
-  }));
 
 const fakeFetchAddress = _ => {
     return new Promise(function(resolve, reject) {
@@ -86,6 +35,7 @@ const fakeFetchEmails = id => {
         setTimeout(_ => resolve(emailData.filter(e => e.address_id === id)), 100);
     })
 }
+// ----- devide up 
 
 export default _ => {
     const [addresses, setAddresses] = useState([]);
@@ -129,7 +79,7 @@ export default _ => {
             })
         })
     }, [])
-
+// Im guessing the email store has already been built out, but the .js is one line long so I wanted to ask
     return (
         <EmailStore.Provider value = {{ openEmail: _ => setEmailVisi(true), 
                                         closeEmail: _ => setEmailVisi(false),
@@ -140,7 +90,7 @@ export default _ => {
                     
                 </div>
                 <div className="emails">
-                    <SearchHeader />
+                    <SearchHeader  />
                     <AddressList addresses = {addresses} emails = {emails}/>
                 </div>
                 <ReactModal
@@ -176,44 +126,6 @@ const ViewEmail = ({ data }) => {
     );
 }
 
-const SearchHeader = props => {
-    const classes = useStyles();
-
-    const [search, setSearch] = useState("");
-
-    const handleChange = e => {
-        setSearch(e.currentTarget.value)
-    }
-
-    const resetSearch = _ => {
-        setSearch("")
-    }
-
-    return (
-        <div className="header">
-            <Paper>
-                <IconButton disableFocusRipple disableTouchRipple>
-                    <Search />
-                </IconButton>
-                <InputBase 
-                    variant = "outlined" 
-                    className={classes.textField} 
-                    value={search} 
-                    onChange={handleChange} 
-                    placeholder = "Search"
-                />
-                <IconButton disableFocusRipple disableTouchRipple onClick = {resetSearch}>
-                    <Cancel />
-                </IconButton>
-            </Paper>
-            <div>
-                
-            </div>
-            <Button variant="contained" color="primary" style={{ width: 250 }}>Generate Email</Button>
-        </div>
-    );
-    
-}
 
 const AddressList = props => {
 
@@ -317,16 +229,4 @@ const Email = ({ data, context }) => {
             <FontAwesomeIcon icon = {faTrashAlt} style = {{ color: "red", cursor: "pointer" }} />
         </div>
     );
-}
-
-function generateRandomName(length) {
-    let a = "abcdefghijklmnopqrstuvwxyz"
-
-    let name = ""
-
-    for (let i = 0; i < length; i++) {
-        name += a.charAt(Math.random() * a.length);
-    }
-
-    return name;
 }

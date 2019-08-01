@@ -13,7 +13,8 @@ const htmlToReact = new Parser();
 
 const Email = ({ data, context }) => {
 
-    const deleteEmail = _ => {
+    const deleteEmail = e => {
+        e.stopPropagation();
         fetch(`${window.serverURL}/api/messages/${data.id}`, {
             headers: {
                 'Authorization': cookies.get("token"),
@@ -30,7 +31,9 @@ const Email = ({ data, context }) => {
                 <h3>From: {data.from}</h3>
                 <h3>Subject: {data.subject}</h3>
             </div>
-            <FontAwesomeIcon icon = {faTrashAlt} style = {{ color: "red", cursor: "pointer" }} onClick = {deleteEmail} />
+            <div onClick = {deleteEmail}>
+                <FontAwesomeIcon icon = {faTrashAlt} style = {{ color: "red", cursor: "pointer" }}  />
+            </div>
         </div>
     );
 }

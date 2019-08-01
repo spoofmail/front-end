@@ -41,8 +41,8 @@ const Email = ({ data, context }) => {
 const ViewEmail = ({ data }) => {
 
     let sanitized = sanitizeHTML(data.html, {
-        allowedTags: sanitizeHTML.defaults.allowedTags.concat([ "img", "h1", "h2" ]),
-        allowedAttributes: { "*": ['style'] }
+        allowedTags: sanitizeHTML.defaults.allowedTags.concat([ "img", "h1", "h2", "a" ]),
+        allowedAttributes: { "*": ['style', "href"] }
     })
 
     return (

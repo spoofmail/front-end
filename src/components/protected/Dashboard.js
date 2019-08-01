@@ -17,6 +17,7 @@ import "../../CSS/Dashboard.css"
 import { customStyles } from './customStyles';
 
 import Cookies from "universal-cookie";
+import { Parser } from "html-to-react";
 let cookies = new Cookies();
 const htmlToReact = new Parser();
 

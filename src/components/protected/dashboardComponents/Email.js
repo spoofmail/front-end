@@ -39,7 +39,7 @@ const ViewEmail = ({ data }) => {
 }
 
 
-export {ViewEmail, Email};
+
 
 
 
@@ -50,3 +50,4 @@ const clickEmail = (data, context) => {
 }
 
 export default Email;
+export {ViewEmail};

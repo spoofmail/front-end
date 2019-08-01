@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import { Button, Paper, InputBase, IconButton, TextField } from "@material-ui/core";
-import { Search, Cancel, KeyboardArrowDown, KeyboardArrowUp, Trash } from "@material-ui/icons"
+import { Search, Cancel, Trash } from "@material-ui/icons"
 
 import {useStyles} from '../customStyles';
 

@@ -1,5 +1,3 @@
-import React from 'react';
-
 
 function generateRandomName(length) {
     let a = "abcdefghijklmnopqrstuvwxyz"
@@ -11,7 +9,7 @@ function generateRandomName(length) {
     }
 
     return name;
-}
+};
 
 export const addressesList = [
     { id: 0, user_id: 0, name: "Google", email: `${generateRandomName(16)}@gmail.com` },

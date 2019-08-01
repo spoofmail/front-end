@@ -82,7 +82,7 @@
     margin-top: 7px;
 }
 
-.address .email-list .email {
+.email {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -92,12 +92,11 @@
     padding: 15px;
     margin: 5px 0;
 }
-
-.address .email-list .email div {
+ .email div {
     display: flex;
 }
 
-.address .email-list .email h3 {
+.email h3 {
     color: var(--font-color);
     margin: 0 25px;
 }

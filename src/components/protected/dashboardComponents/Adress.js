@@ -29,13 +29,26 @@ const Address = ({ data, emails, id }) => {
     }
 
     const _renderName = _ => {
-        if (editMode) return <form onSubmit={handleEditBlur}><TextField value={nameEdit} onChange={handleNameEdit} onBlur={handleEditBlur} /></form>;
+        if (editMode) return <form onSubmit={handleEditBlur}><TextField value={nameEdit} onChange={handleNameEdit} onMouseLeave={handleEditBlur} /></form>;
         else return <h3 onClick={_ => setEditMode(true)}>{nameEdit}</h3>;
     }
 
     const handleEditBlur = e => {
         e.preventDefault();
         setEditMode(false);
+
+        if(nameEdit !== data.addresstag)
+            fetch(`${window.serverURL}/api/addresses/${id}`, {
+                headers: {
+                    'Authorization': cookies.get("token"),
+                    'Accept': "application/json",
+                    'Content-Type': "application/json"
+                },
+                method: "PUT",
+                body: JSON.stringify({ addresstag: nameEdit })
+            }).then(res => res.json()).then(data => {
+                console.log(data);
+            })
     }
 
     const handleNameEdit = e => {

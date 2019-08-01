@@ -24,7 +24,7 @@ const htmlToReact = new Parser();
 
 ReactModal.setAppElement('#root')
 
-const fetchAdresses = _ => {
+export const fetchAdresses = _ => {
     return new Promise(function(resolve, reject) {
         fetch(`${window.serverURL}/api/addresses`, {
             headers: {
@@ -36,7 +36,7 @@ const fetchAdresses = _ => {
     })
 }
 
-const fetchEmails = id => {
+export const fetchEmails = id => {
     return new Promise(function(resolve, reject) {
         fetch(`${window.serverURL}/api/messages/${id}`, {
             headers: {
@@ -52,7 +52,7 @@ let interval = null;
 
 export default _ => {
     const [addresses, setAddresses] = useState([]);
-    const [emails, setEmails] = useState({});
+    const [emails, setEmailList] = useState({});
     const [emailCount, setEmailCount] = useState(0);
 
     const [emailVisible, setEmailVisible] = useState(false);
@@ -66,6 +66,12 @@ export default _ => {
         setEmailData(data);
     }
 
+    const setEmails = (id, newEmails) => {
+        let newEmailList = emails;
+        newEmailList[id] = newEmails;
+        setEmailList({ ...newEmailList });
+    }
+
     useEffect(_ => {
         document.title = "Dashboard";
 
@@ -74,39 +80,8 @@ export default _ => {
 
         const setAddresseses = _ => {
             fetchAdresses().then(data => {
-                let promiseArr = []
-                data.forEach(address => {
-                    promiseArr.push(fetchEmails(address.id))
-                })
-    
-                Promise.all(promiseArr).then(data2 => {
-                    let amount = 0;
-                    let newEmailObj = {};
-                    
-                    if(!data2 || data2.length === 0) {
-                        setAddresses(data);
-                    }
-                    else {
-                        console.log(data2)
-                        data2.forEach(e => {
-                            if(!e || e.length === 0) {
-    
-                            }
-                            else {
-                                let id = e[0].address_id;
-                                console.log(id)
-                                newEmailObj[id] = e;
-                                amount += e.length;
-                            }
-                        })
-                        
-                        if(data.length !== addresses.length)
-                            setAddresses(data);
-                        setEmails(newEmailObj);
-                        setEmailCount(amount);
-                    }
-                    
-                })
+                if(data.length !== addresses.length)
+                    setAddresses(data);
             })
         }
 
@@ -123,7 +98,9 @@ export default _ => {
         <EmailStore.Provider value={{
             openEmail: _ => setEmailVisi(true),
             closeEmail: _ => setEmailVisi(false),
-            setEmailContent
+            setEmailContent,
+            setEmails,
+            getEmails: _ => emails
         }}>
             <div className="dash-container">
                 <div className="title">
@@ -132,7 +109,7 @@ export default _ => {
                 </div>
                 <div className="emails">
                     <SearchHeader emails = {emails} />
-                    <AddressList addresses={addresses} emails={emails} />
+                    <AddressList addresses={addresses} />
                 </div>
                 <ReactModal
                     isOpen={emailVisible}

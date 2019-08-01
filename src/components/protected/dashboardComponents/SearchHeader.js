@@ -4,6 +4,12 @@ import { Search, Cancel, Trash } from "@material-ui/icons"
 import Email from './Email';
 import {useStyles} from '../customStyles';
 import EmailStore from '../../../stores/email-store';
+import ReactModal from "react-modal";
+import { customStyles } from "../customStyles";
+
+import Cookies from "universal-cookie";
+
+let cookies = new Cookies();
 
 const SearchHeader = props => {
     const classes = useStyles();
@@ -11,33 +17,46 @@ const SearchHeader = props => {
 
     const [search, setSearch] = useState("");
     const [filtered, setFiltered] = useState([]);
+    const [form, setForm] = useState({
+        name: ""
+    });
+    const [generateVisi, setGenerateVisi] = useState(false);
+
     const handleChange = e => {
         setSearch(e.currentTarget.value)
-
     }
 
     useEffect(_ => {    
-        console.log('props', props);
-        let allEmails =[];
-        Object.keys(props.emails).forEach(key => {
-
-            for(let i of props.emails[key] ){
-                allEmails.push(i)
+        const filterEmails = _ => {
+            let allEmails =[];
+            Object.keys(context.getEmails()).forEach(key => {
+                console.log(context.getEmails())
+    
+                for(let i of context.getEmails()[key] ){
+                    allEmails.push(i)
+                }
+            })    
+    
+    
+            allEmails = allEmails.filter(email => {
+                if(email.from.toLowerCase().includes(search.toLowerCase()) || email.subject.toLowerCase().includes(search.toLowerCase()) ) {
+                    return true;
+    
+                } else {
+                    return false;
+                }
             }
-        })    
-
-
-        allEmails = allEmails.filter(email => {
-            if(email.from.toLowerCase().includes(search.toLowerCase()) || email.subject.toLowerCase().includes(search.toLowerCase()) ) {
-                return true;
-
-            } else {
-                return false;
-            }
+                )
+            console.log('allEmails', allEmails);
+            setFiltered(allEmails);
         }
-            )
-        console.log('allEmails', allEmails);
-        setFiltered(allEmails);
+        
+        if(search && search.length !== 0 && search.length !== "") {
+            filterEmails();
+        }
+        else {
+            resetSearch();
+        }
     }
     ,[search])
     
@@ -45,6 +64,28 @@ const SearchHeader = props => {
 
     const resetSearch = _ => {
         setSearch("")
+        setFiltered([]);
+    }
+
+    const handleNameChange = e => {
+        let { name, value } = e.target;
+        setForm({ ...form, [name]: value });
+    }
+
+    const handleAddressSubmit = e => {
+        e.preventDefault();
+
+        fetch(`${window.serverURL}/api/addresses`, {
+            headers: {
+                'Authorization': cookies.get("token"),
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            },
+            method: "POST",
+            body: JSON.stringify({ addresstag: form.name })
+        }).then(res => res.json()).then(data => {
+            setGenerateVisi(false);
+        })
     }
 
     return (
@@ -69,7 +110,7 @@ const SearchHeader = props => {
                 
             </div>
           
-            <Button variant="contained" color="primary" style={{ width: 250 }}>Generate Email</Button>
+            <Button variant="contained" color="primary" style={{ width: 250 }} onClick = {_ => setGenerateVisi(true)}>Generate Email</Button>
         </div>
         <div className="filteredEmails">
             {filtered.map( (result, i) => {
@@ -77,6 +118,17 @@ const SearchHeader = props => {
             })}
         
         </div>
+        <ReactModal
+                isOpen = {generateVisi}
+                onRequestClose = {_ => setGenerateVisi(false)}
+                style = {customStyles}
+                contentLabel = {"Generate Address"}
+            >
+            <form onSubmit = {handleAddressSubmit}>
+                <TextField name = "name" value = {form.name} onChange = {handleNameChange}  />
+                <Button variant = "contained" color = "primary" type = "submit">Generate</Button>
+            </form>
+        </ReactModal>
     </>
     
     );

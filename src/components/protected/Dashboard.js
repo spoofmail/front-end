@@ -6,9 +6,9 @@ import EmailStore from "../../stores/email-store";
 import ReactModal from "react-modal";
 
 
+import "../../CSS/Dashboard.css"
+
 import SearchHeader from './dashboardComponents/SearchHeader';
-
-
 
 import { addressesList, emailData } from './DummyData';
 import { AddressList } from './dashboardComponents/AdressList';
@@ -16,31 +16,47 @@ import { ViewEmail, Email } from './dashboardComponents/Email';
 import "../../CSS/Dashboard.css"
 import { customStyles } from './customStyles';
 
+import Cookies from "universal-cookie";
+import { Parser } from "html-to-react";
+let cookies = new Cookies();
+const htmlToReact = new Parser();
+
 
 ReactModal.setAppElement('#root')
 
-const fakeFetchAddress = _ => {
-    return new Promise(function (resolve, reject) {
-        setTimeout(_ => resolve(addressesList), 100);
+export const fetchAdresses = _ => {
+    return new Promise(function(resolve, reject) {
+        fetch(`${window.serverURL}/api/addresses`, {
+            headers: {
+                'Authorization': cookies.get("token")
+            }
+        }).then(res => res.json()).then(data => {
+            resolve(data);
+        })
     })
 }
 
-const fakeFetchEmails = id => {
-    return new Promise(function (resolve, reject) {
-        setTimeout(_ => resolve(emailData.filter(e => e.address_id === id)), 100);
+export const fetchEmails = id => {
+    return new Promise(function(resolve, reject) {
+        fetch(`${window.serverURL}/api/messages/${id}`, {
+            headers: {
+                'Authorization': cookies.get("token")
+            }
+        }).then(res => res.json()).then(data => {
+            resolve(data);
+        })
     })
 }
-// ---- dont forget to ask vince and jack about the email server and which components actually dont need to be importing it
+
+let interval = null;
 
 export default _ => {
     const [addresses, setAddresses] = useState([]);
-    const [emails, setEmails] = useState({});
+    const [emails, setEmailList] = useState({});
     const [emailCount, setEmailCount] = useState(0);
 
     const [emailVisible, setEmailVisible] = useState(false);
     const [emailData, setEmailData] = useState({});
-
-    console.log(emailVisible, emailData);
 
     const setEmailVisi = value => {
         setEmailVisible(value);
@@ -50,36 +66,41 @@ export default _ => {
         setEmailData(data);
     }
 
+    const setEmails = (id, newEmails) => {
+        let newEmailList = emails;
+        newEmailList[id] = newEmails;
+        setEmailList({ ...newEmailList });
+    }
+
     useEffect(_ => {
         document.title = "Dashboard";
-        fakeFetchAddress().then(data => {
-            let promiseArr = []
-            data.forEach(address => {
-                promiseArr.push(fakeFetchEmails(address.id))
+
+        clearInterval(interval);
+        interval = null;
+
+        const setAddresseses = _ => {
+            fetchAdresses().then(data => {
+                if(data.length !== addresses.length)
+                    setAddresses(data);
             })
+        }
 
-            Promise.all(promiseArr).then(data2 => {
-                let amount = 0;
-                let newEmailObj = {};
+        interval = setInterval(setAddresseses, 5000);
+        setAddresseses();
 
-                data2.forEach(e => {
-                    let id = e[0].address_id;
-                    newEmailObj[id] = e;
-                    amount += e.length;
-                })
-
-                setAddresses(data);
-                setEmails(newEmailObj);
-                setEmailCount(amount);
-            })
-        })
+        return _ => {
+            clearInterval(interval);
+        }
+        
     }, [])
     // Im guessing the email store has already been built out, but the .js is one line long so I wanted to ask
     return (
         <EmailStore.Provider value={{
             openEmail: _ => setEmailVisi(true),
             closeEmail: _ => setEmailVisi(false),
-            setEmailContent
+            setEmailContent,
+            setEmails,
+            getEmails: _ => emails
         }}>
             <div className="dash-container">
                 <div className="title">
@@ -88,7 +109,7 @@ export default _ => {
                 </div>
                 <div className="emails">
                     <SearchHeader emails = {emails} />
-                    <AddressList addresses={addresses} emails={emails} />
+                    <AddressList addresses={addresses} />
                 </div>
                 <ReactModal
                     isOpen={emailVisible}
@@ -102,3 +123,4 @@ export default _ => {
         </EmailStore.Provider>
     );
 }
+

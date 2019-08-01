@@ -3,14 +3,14 @@ import Address from './Adress';
 
 
 export const AddressList = props => {
-
-    
+    console.log(props);
+    let reverse = Array.from(props.addresses).reverse();
     return (
         <div className="body">
             { 
-                props.addresses.length === 0 ? 
+                reverse.length === 0 ? 
                 <h1>Loading Addresses...</h1> : 
-                props.addresses.map((e, i) => <Address key = {i} data = {e} emails = {props.emails[e.id]}/>)
+                reverse.map((e, i) => <Address key = {e.id} data = {e} id = {e.id} />)
             }
         </div>
     );

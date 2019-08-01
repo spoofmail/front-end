@@ -10,12 +10,12 @@ import { faCopy } from "@fortawesome/free-solid-svg-icons";
 
 const style = { color: "var(--font-color)", fontSize: "2rem", cursor: "pointer" }
 
-const Address = ({ data, emails }) => {
+const Address = ({ data, emails, id }) => {
     const context = useContext(EmailStore);
 
     const [expanded, setExpanded] = useState(false);
 
-    const [nameEdit, setNameEdit] = useState(data.name);
+    const [nameEdit, setNameEdit] = useState(data.addresstag);
     const [editMode, setEditMode] = useState(false);
 
     const [hoverMode, setHoverMode] = useState(false);
@@ -40,8 +40,8 @@ const Address = ({ data, emails }) => {
     }
 
     const _renderEmail = _ => {
-        if (hoverMode) return <h3 onMouseLeave={handleMouseLeave} style={{ cursor: "pointer", border: "1px solid var(--font-color)", padding: 5 }} onClick={handleHoverClick}>{data.email} <FontAwesomeIcon icon={faCopy} /></h3>;
-        else return <h3 onMouseOver={handleMouseOver} >{data.email}</h3>;
+        if (hoverMode) return <h3 onMouseLeave={handleMouseLeave} style={{ cursor: "pointer", border: "1px solid var(--font-color)", padding: 5 }} onClick={handleHoverClick}>{data.addressname} <FontAwesomeIcon icon={faCopy} /></h3>;
+        else return <h3 onMouseOver={handleMouseOver} >{data.addressname}</h3>;
     }
 
     const handleMouseOver = _ => {
@@ -53,10 +53,8 @@ const Address = ({ data, emails }) => {
     }
 
     const handleHoverClick = _ => {
-        navigator.clipboard.writeText(data.email);
-        alert("Copied to clipboard");
+        navigator.clipboard.writeText(data.addressname);
     }
-
 
     return (
         <div className="address">
@@ -70,7 +68,7 @@ const Address = ({ data, emails }) => {
                 <Button variant="outlined" style={{ color: "red", borderColor: "red", textTransform: "none" }}>Remove</Button>
             </div>
             <div className="email-list" style={{ display: expanded ? "flex" : "none" }}>
-                <EmailList emails={emails} context={context} />
+                <EmailList context={context} id = {id}/>
             </div>
         </div>
     );

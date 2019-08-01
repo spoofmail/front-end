@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 
 
 import EmailStore from "../../stores/email-store";
@@ -10,23 +10,23 @@ import SearchHeader from './dashboardComponents/SearchHeader';
 
 
 
-import {addressesList, emailData} from './DummyData';
-import {AddressList} from './dashboardComponents/AdressList';
-import {ViewEmail, Email} from './dashboardComponents/Email';
+import { addressesList, emailData } from './DummyData';
+import { AddressList } from './dashboardComponents/AdressList';
+import { ViewEmail, Email } from './dashboardComponents/Email';
 import "../../CSS/Dashboard.css"
-import {customStyles} from './customStyles';
+import { customStyles } from './customStyles';
 
 
 ReactModal.setAppElement('#root')
 
 const fakeFetchAddress = _ => {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         setTimeout(_ => resolve(addressesList), 100);
     })
 }
 
 const fakeFetchEmails = id => {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         setTimeout(_ => resolve(emailData.filter(e => e.address_id === id)), 100);
     })
 }
@@ -45,8 +45,8 @@ export default _ => {
     const setEmailVisi = value => {
         setEmailVisible(value);
     }
-
     const setEmailContent = data => {
+
         setEmailData(data);
     }
 
@@ -61,7 +61,7 @@ export default _ => {
             Promise.all(promiseArr).then(data2 => {
                 let amount = 0;
                 let newEmailObj = {};
-                
+
                 data2.forEach(e => {
                     let id = e[0].address_id;
                     newEmailObj[id] = e;
@@ -74,27 +74,29 @@ export default _ => {
             })
         })
     }, [])
-// Im guessing the email store has already been built out, but the .js is one line long so I wanted to ask
+    // Im guessing the email store has already been built out, but the .js is one line long so I wanted to ask
     return (
-        <EmailStore.Provider value = {{ openEmail: _ => setEmailVisi(true), 
-                                        closeEmail: _ => setEmailVisi(false),
-                                        setEmailContent }}>
+        <EmailStore.Provider value={{
+            openEmail: _ => setEmailVisi(true),
+            closeEmail: _ => setEmailVisi(false),
+            setEmailContent
+        }}>
             <div className="dash-container">
                 <div className="title">
                     <h1>Your Inbox - ({emailCount})</h1>
-                    
+
                 </div>
                 <div className="emails">
-                    <SearchHeader  />
-                    <AddressList addresses = {addresses} emails = {emails}/>
+                    <SearchHeader emails = {emails} />
+                    <AddressList addresses={addresses} emails={emails} />
                 </div>
                 <ReactModal
-                    isOpen = {emailVisible}
-                    onRequestClose = {_ => setEmailVisi(false)}
-                    style = {customStyles}
-                    contentLabel = {"Email"}
+                    isOpen={emailVisible}
+                    onRequestClose={_ => setEmailVisi(false)}
+                    style={customStyles}
+                    contentLabel={"Email"}
                 >
-                    <ViewEmail data = {emailData} />
+                    <ViewEmail data={emailData} />
                 </ReactModal>
             </div>
         </EmailStore.Provider>

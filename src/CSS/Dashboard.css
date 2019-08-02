@@ -76,10 +76,18 @@
 }
 
 .address .email-list {
-    display: flex;
+    display: none;
     flex-direction: column;
     padding-left: 25px;
     margin-top: 7px;
+    height: 0;
+    overflow: hidden;
+    transition: height 1s;
+}
+
+.address .email-list.open {
+    display: flex;
+    height: auto;
 }
 
 .email {

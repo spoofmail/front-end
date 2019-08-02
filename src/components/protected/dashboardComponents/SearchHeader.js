@@ -30,7 +30,6 @@ const SearchHeader = props => {
         const filterEmails = _ => {
             let allEmails =[];
             Object.keys(context.getEmails()).forEach(key => {
-                console.log(context.getEmails())
     
                 for(let i of context.getEmails()[key] ){
                     allEmails.push(i)

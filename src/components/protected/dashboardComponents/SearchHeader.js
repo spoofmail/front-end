@@ -38,16 +38,10 @@ const SearchHeader = props => {
             })    
     
     
-            allEmails = allEmails.filter(email => {
-                if(email.from.toLowerCase().includes(search.toLowerCase()) || email.subject.toLowerCase().includes(search.toLowerCase()) ) {
-                    return true;
-    
-                } else {
-                    return false;
-                }
-            }
-                )
-            console.log('allEmails', allEmails);
+            allEmails = allEmails.filter(email => email.from.toLowerCase().includes(search.toLowerCase()) || 
+                                         email.subject.toLowerCase().includes(search.toLowerCase()) || 
+                                         email.text.toLowerCase().includes(search.toLowerCase()))
+
             setFiltered(allEmails);
         }
         
@@ -88,6 +82,15 @@ const SearchHeader = props => {
         })
     }
 
+    const _renderSearchResults = _ => {
+        if(search !== "" && filtered.length === 0) {
+            return <h1 style = {{ color: "var(--font-color)", backgroundColor: "var(--primary-color)", padding: 15, boxShadow: "0 0 4px black" }}>No content matched "{search}"</h1>;
+        }
+        else {
+            return filtered.map( (result, i) => <Email key = {i} data = {result} context = {context} />)
+        }
+    }
+
     return (
         <>
         <div className="header">
@@ -110,10 +113,8 @@ const SearchHeader = props => {
             <Button variant="contained" color="primary" style={{ width: 250 }} onClick = {_ => setGenerateVisi(true)}>Generate Email</Button>
         </div>
         <div className="filteredEmails">
-            {filtered.map( (result, i) => {
-            return  <Email key = {i} data = {result} context = {context} />
-            })}
-        
+            
+            { _renderSearchResults() }
         </div>
         <ReactModal
                 isOpen = {generateVisi}

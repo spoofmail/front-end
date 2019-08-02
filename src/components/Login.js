@@ -170,6 +170,8 @@ const SignupComponent = props => {
             if(!form[key] || form[key] === "" || form[key].length === 0) {
                 newErrors[key] = "Field cannot be blank";
             }
+            setError(newErrors);
+            return;
         })
 
         if(form['password'] !== form['confirmPassword']) {
@@ -178,9 +180,9 @@ const SignupComponent = props => {
                 password: "Passwords dont match",
                 confirmPassword: "Passwords dont match"
             }
+            setError(newErrors);
+            return;
         }
-
-        setError(newErrors);
 
         fetch(`${window.serverURL}/api/auth/register`, {
             headers: {
@@ -190,8 +192,8 @@ const SignupComponent = props => {
             method: "POST",
             body: JSON.stringify({ username: form.username, password: form.password })
         })
-        .then(handleSuccess)
-        .catch(handleError)
+            .then(handleSuccess)
+            .catch(handleError)
     }
 
     return (

@@ -53,7 +53,6 @@ let interval = null;
 export default _ => {
     const [addresses, setAddresses] = useState([]);
     const [emails, setEmailList] = useState({});
-    const [emailCount, setEmailCount] = useState(0);
 
     const [emailVisible, setEmailVisible] = useState(false);
     const [emailData, setEmailData] = useState({});
@@ -70,15 +69,6 @@ export default _ => {
         let newEmailList = emails;
         newEmailList[id] = newEmails;
         setEmailList({ ...newEmailList });
-
-        let count = 0;
-
-        Object.keys(newEmailList).forEach(key => {
-
-            count += newEmailList[key].length;
-        })    
-
-        setEmailCount(count);
     }
 
     useEffect(_ => {
@@ -119,7 +109,7 @@ export default _ => {
         }}>
             <div className="dash-container">
                 <div className="title">
-                    <h1>Your Inbox - ({emailCount})</h1>
+                    <h1>Your Inboxes</h1>
 
                 </div>
                 <div className="emails">

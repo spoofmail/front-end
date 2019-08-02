@@ -13,6 +13,7 @@
     "lodash": "^4.17.15",
     "lodash.template": "^4.5.0",
     "react": "^16.8.6",
+    "react-animate-height": "^2.0.15",
     "react-dom": "^16.8.6",
     "react-modal": "^3.9.1",
     "react-router": "^5.0.1",

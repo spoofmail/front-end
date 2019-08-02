@@ -8,6 +8,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { faCopy } from "@fortawesome/free-solid-svg-icons";
 
+import AnimateHeight from 'react-animate-height';
+
 import Cookies from "universal-cookie";
 let cookies = new Cookies();
 
@@ -93,8 +95,10 @@ const Address = ({ data, emails, id }) => {
                 </div>
                 <Button variant="outlined" style={{ color: "red", borderColor: "red", textTransform: "none" }} onClick = {onRemove}>Remove</Button>
             </div>
-            <div className="email-list" style={{ display: expanded ? "flex" : "none" }}>
-                <EmailList context={context} id = {id}/>
+            <div className={`email-list ${expanded ? "open" : ""}`}>
+                <AnimateHeight height = {expanded ? "auto" : 0 } duration = {500}>
+                    <EmailList context={context} id = {id}/>
+                </AnimateHeight>
             </div>
         </div>
     );

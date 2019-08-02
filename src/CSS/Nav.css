@@ -45,7 +45,7 @@
 .navigation img.active {
     left: 0;
     transform: translateX(0);
-    padding-left: 15px;
+    margin-left: 15px;
     visibility: visible;
 }
 

@@ -42,7 +42,7 @@ const EmailList = props => {
             return (
                 reversed.map((e, i) => <Email key = {e.id} data = {e} context = {props.context}/>)
             )
-        else return <h1>No Emails here</h1>
+        else return <h3 style = {{ backgroundColor: "var(--primary-color)", color: "var(--font-color)", padding: 15, boxShadow: "0 0 4px black", margin: 0 }}>- No Emails here</h3>
     }
 }
 

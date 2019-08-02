@@ -27,7 +27,7 @@
     padding: 25px;
     justify-content: space-between;
     background-color: var(--primary-color);
-    box-shadow: 0 0 8px black;
+    box-shadow: 0 0 6px black;
 }
 
 .dash-container .title button .MuiButton-label {
@@ -62,7 +62,7 @@
     align-items: center;
     padding: 15px;
     background-color: var(--primary-color);
-    box-shadow: 0 0 8px black;
+    box-shadow: 0 0 4px black;
 }
 
 .address .title h3 {
@@ -87,7 +87,7 @@
     justify-content: space-between;
     align-items: center;
     background-color: var(--primary-color);
-    box-shadow: 0 0 8px black;
+    box-shadow: 0 0 4px black;
     cursor: pointer;
     padding: 15px;
     margin: 5px 0;
@@ -99,6 +99,10 @@
 .email h3 {
     color: var(--font-color);
     margin: 0 25px;
+}
+
+.email div h3 span {
+    margin: 0 20px;
 }
 
 .email-view {
@@ -113,18 +117,29 @@
     flex-direction: column;
 }
 
-.email-view h1 {
-    margin: 0;
+.email-view h3 {
+    margin: 5px 0;
     margin-right: 15px;
     color: var(--font-color)
+}
+
+.email-view span {
+    margin: 0 20px;
 }
 
 .email-view .email-port {
     margin-top: 15px;
     background-color: white;
-    border-radius: 15px;
     padding: 25px;
     border: 1px solid var(--font-color);
     overflow: scroll;
     max-width: 700px;
+}
+
+.MuiInputLabel-formControl {
+    color: var(--font-color) !important
+}
+
+.MuiInput-underline:before {
+    border-bottom: 1px solid var(--font-color) !important
 }

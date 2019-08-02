@@ -70,6 +70,15 @@ export default _ => {
         let newEmailList = emails;
         newEmailList[id] = newEmails;
         setEmailList({ ...newEmailList });
+
+        let count = 0;
+
+        Object.keys(newEmailList).forEach(key => {
+
+            count += newEmailList[key].length;
+        })    
+
+        setEmailCount(count);
     }
 
     useEffect(_ => {

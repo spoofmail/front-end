@@ -28,8 +28,8 @@ const Email = ({ data, context }) => {
     return (
         <div className = "email" onClick = {_ => clickEmail(data, context)}>
             <div>
-                <h3>From: {data.from}</h3>
-                <h3>Subject: {data.subject}</h3>
+                <h3>From: <span>{data.from}</span></h3>
+                <h3>Subject: <span>{data.subject}</span></h3>
             </div>
             <div onClick = {deleteEmail}>
                 <FontAwesomeIcon icon = {faTrashAlt} style = {{ color: "red", cursor: "pointer" }}  />
@@ -41,15 +41,15 @@ const Email = ({ data, context }) => {
 const ViewEmail = ({ data }) => {
 
     let sanitized = sanitizeHTML(data.html, {
-        allowedTags: sanitizeHTML.defaults.allowedTags.concat([ "img", "h1", "h2", "a" ]),
+        allowedTags: sanitizeHTML.defaults.allowedTags.concat([ "img", "h3", "h2", "a" ]),
         allowedAttributes: { "*": ['style', "href"] }
     })
 
     return (
             <div className = "email-view">
                 <div className = "title">
-                    <h1>From: {data.from}</h1>
-                    <h1>Subject: {data.subject}</h1>
+                    <h3>From: <span>{data.from}</span></h3>
+                    <h3>Subject: <span>{data.subject}</span></h3>
                 </div>
                 <div className = "email-port">
                     { htmlToReact.parse(sanitized) }

@@ -29,7 +29,7 @@ const Address = ({ data, emails, id }) => {
     }
 
     const _renderName = _ => {
-        if (editMode) return <form onSubmit={handleEditBlur}><TextField value={nameEdit} onChange={handleNameEdit} onMouseLeave={handleEditBlur} /></form>;
+        if (editMode) return <form onSubmit={handleEditBlur}><TextField value={nameEdit} onChange={handleNameEdit}  /></form>;
         else return <h3 onClick={_ => setEditMode(true)}>{nameEdit}</h3>;
     }
 
@@ -85,12 +85,11 @@ const Address = ({ data, emails, id }) => {
 
     return (
         <div className="address">
-            <div className="title">
+            <div className="title" onMouseLeave={handleEditBlur}>
                 <div>
                     {_renderChevron()}
                     {_renderName()}
                     {_renderEmail()}
-                    <h3>{data.emails}</h3>
                 </div>
                 <Button variant="outlined" style={{ color: "red", borderColor: "red", textTransform: "none" }} onClick = {onRemove}>Remove</Button>
             </div>

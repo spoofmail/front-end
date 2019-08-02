@@ -106,9 +106,6 @@ const SearchHeader = props => {
                     <Cancel />
                 </IconButton>
             </Paper>
-            <div>
-                
-            </div>
           
             <Button variant="contained" color="primary" style={{ width: 250 }} onClick = {_ => setGenerateVisi(true)}>Generate Email</Button>
         </div>
@@ -124,9 +121,11 @@ const SearchHeader = props => {
                 style = {customStyles}
                 contentLabel = {"Generate Address"}
             >
-            <form onSubmit = {handleAddressSubmit}>
-                <TextField name = "name" value = {form.name} onChange = {handleNameChange}  />
-                <Button variant = "contained" color = "primary" type = "submit">Generate</Button>
+            <h2 style = {{ color: "var(--font-color)" }}>Generate a random email</h2>
+            <h4 style = {{ color: "var(--font-color)" }}>Give the email a label for easier identification</h4>
+            <form onSubmit = {handleAddressSubmit} style = {{ display: "flex", alignItems: "center" }}>
+                <TextField name = "name" value = {form.name} onChange = {handleNameChange} label = "Label" />
+                <Button variant = "contained" color = "primary" type = "submit" style = {{ marginLeft: 10 }}>Generate</Button>
             </form>
         </ReactModal>
     </>

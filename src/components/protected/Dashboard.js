@@ -72,6 +72,31 @@ export default _ => {
     }
 
     useEffect(_ => {
+        const websocket = new WebSocket(`ws://spoofmail-lambda.herokuapp.com/ws?token=${cookies.get("token")}`)
+
+        websocket.onopen = function(msg) {
+            console.log(msg)
+        }
+
+        websocket.onmessage = function(msg) {
+            console.log(msg)
+        }
+
+        websocket.onerror = function(err) {
+            console.log(err)
+        }
+
+        websocket.onclose = function(close) {
+            console.log(close)
+        }
+
+        return _ => {
+            console.log("I closed")
+            websocket.close()
+        }
+    }, [])
+
+    useEffect(_ => {
         document.title = "Dashboard";
 
         clearInterval(interval);
@@ -87,7 +112,7 @@ export default _ => {
             })
         }
 
-        interval = setInterval(setAddresseses, 1000);
+        interval = setInterval(setAddresseses, 10000);
         setAddresseses();
 
         return _ => {

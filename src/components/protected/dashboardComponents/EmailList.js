@@ -26,7 +26,7 @@ const EmailList = props => {
                     context.setEmails(props.id, data);
                 }
             })
-        }, 1000)
+        }, 10000)
 
         return _ => {
             clearInterval(intervals[props.id]);

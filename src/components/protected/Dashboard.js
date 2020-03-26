@@ -72,7 +72,7 @@ export default _ => {
     }
 
     useEffect(_ => {
-        const websocket = new WebSocket(`ws://spoofmail-lambda.herokuapp.com/ws?token=${cookies.get("token")}`)
+        const websocket = new WebSocket(`wss://spoofmail-lambda.herokuapp.com/ws?token=${cookies.get("token")}`)
 
         websocket.onopen = function(msg) {
             console.log(msg)

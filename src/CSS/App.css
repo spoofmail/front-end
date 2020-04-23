@@ -2,6 +2,13 @@ html {
   font-size: 100%;
 }
 
+
+@media(max-width: 1000px){
+  html{
+    background: orangered
+  }
+}
+
 /*
 {
   --primary-color: #2a2a2e;

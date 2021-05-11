@@ -4,6 +4,6 @@ Generate anonymous burner emails to reduce spam and protect your privacy. Applic
 
 Deployed using Netlify: https://spoofmail.netlify.app/
 
-Backend Express Server: https://github.com/spoofmail/back-end
+Spoofmail Backend: https://github.com/spoofmail/back-end
 
-Backend Mail Server: https://github.com/spoofmail/mailserver
+Spoofmail Mailserver: https://github.com/spoofmail/mailserver

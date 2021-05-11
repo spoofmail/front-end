@@ -15,9 +15,7 @@ let cookies = new Cookies();
 
 const style = { color: "var(--font-color)", fontSize: "2rem", cursor: "pointer" }
 
-const Address = ({ data, emails, id }) => {
-    const context = useContext(EmailStore);
-
+const Address = ({ data, emails, id, removeAddress }) => {
     const [expanded, setExpanded] = useState(false);
 
     const [nameEdit, setNameEdit] = useState(data.addresstag);
@@ -49,7 +47,7 @@ const Address = ({ data, emails, id }) => {
                 method: "PUT",
                 body: JSON.stringify({ addresstag: nameEdit })
             }).then(res => res.json()).then(data => {
-                console.log(data);
+
             })
     }
 
@@ -81,7 +79,7 @@ const Address = ({ data, emails, id }) => {
             },
             method: "DELETE"
         }).then(res => res.json()).then(data => {
-            console.log(data);
+            removeAddress(id)
         })
     }
 
@@ -97,7 +95,7 @@ const Address = ({ data, emails, id }) => {
             </div>
             <div className={`email-list ${expanded ? "open" : ""}`}>
                 <AnimateHeight height = {expanded ? "auto" : 0 } duration = {500}>
-                    <EmailList context={context} id = {id}/>
+                    <EmailList id = {id}/>
                 </AnimateHeight>
             </div>
         </div>

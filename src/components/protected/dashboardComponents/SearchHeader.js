@@ -29,9 +29,9 @@ const SearchHeader = props => {
     useEffect(_ => {    
         const filterEmails = _ => {
             let allEmails =[];
-            Object.keys(context.getEmails()).forEach(key => {
+            Object.keys(context.emails).forEach(key => {
     
-                for(let i of context.getEmails()[key] ){
+                for(let i of context.emails[key] ){
                     allEmails.push(i)
                 }
             })    
@@ -78,7 +78,9 @@ const SearchHeader = props => {
             body: JSON.stringify({ addresstag: form.name })
         }).then(res => res.json()).then(data => {
             setGenerateVisi(false);
+            context.addAddress(data.saved)
         })
+        
     }
 
     const _renderSearchResults = _ => {

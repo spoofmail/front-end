@@ -29,9 +29,9 @@ const SearchHeader = props => {
     useEffect(_ => {    
         const filterEmails = _ => {
             let allEmails =[];
-            Object.keys(context.emails).forEach(key => {
+            Object.keys(context.emailMap).forEach(key => {
     
-                for(let i of context.emails[key] ){
+                for(let i of context.emailMap[key] ){
                     allEmails.push(i)
                 }
             })    

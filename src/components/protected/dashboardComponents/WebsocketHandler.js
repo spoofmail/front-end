@@ -47,7 +47,7 @@ export default (props) => {
         return () => {
             if (websocket.current && websocket.current.readyState === WebSocket.OPEN) {
                 websocket.current.close()
-                websocket = null
+                websocket.current = null
             }
             if (interval) {
                 clearInterval(interval)

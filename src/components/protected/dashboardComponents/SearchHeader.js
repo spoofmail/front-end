@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useContext } from "react";
 import { Button, Paper, InputBase, IconButton, TextField } from "@material-ui/core";
 import { Search, Cancel, Trash } from "@material-ui/icons"
 import Email from './Email';
-import {useStyles} from '../customStyles';
+import { useStyles } from '../customStyles';
 import EmailStore from '../../../stores/email-store';
 import ReactModal from "react-modal";
 import { customStyles } from "../customStyles";
@@ -26,34 +26,34 @@ const SearchHeader = props => {
         setSearch(e.currentTarget.value)
     }
 
-    useEffect(_ => {    
+    useEffect(_ => {
         const filterEmails = _ => {
-            let allEmails =[];
+            const allEmails = [];
             Object.keys(context.emailMap).forEach(key => {
-    
-                for(let i of context.emailMap[key] ){
+
+                for (let i of context.emailMap[key]) {
                     allEmails.push(i)
                 }
-            })    
-    
-    
-            allEmails = allEmails.filter(email => email.from.toLowerCase().includes(search.toLowerCase()) || 
-                                         email.subject.toLowerCase().includes(search.toLowerCase()) || 
-                                         email.text.toLowerCase().includes(search.toLowerCase()))
+            })
 
-            setFiltered(allEmails);
+            const searchText = search.toLowerCase()
+
+            const filteredEmails = allEmails.filter(email => email.from.toLowerCase().includes(searchText) ||
+                email.subject.toLowerCase().includes(searchText) ||
+                email.text.toLowerCase().includes(searchText))
+
+            setFiltered(filteredEmails);
         }
-        
-        if(search && search.length !== 0 && search.length !== "") {
+
+        if (search && search.length !== 0 && search.length !== "") {
             filterEmails();
         }
         else {
             resetSearch();
         }
-    }
-    ,[search])
-    
-//|| email.text.includes(search)
+    }, [search])
+
+    //|| email.text.includes(search)
 
     const resetSearch = _ => {
         setSearch("")
@@ -80,60 +80,60 @@ const SearchHeader = props => {
             setGenerateVisi(false);
             context.addAddress(data.saved)
         })
-        
+
     }
 
     const _renderSearchResults = _ => {
-        if(search !== "" && filtered.length === 0) {
-            return <h1 style = {{ color: "var(--font-color)", backgroundColor: "var(--primary-color)", padding: 15, boxShadow: "0 0 4px black" }}>No content matched "{search}"</h1>;
+        if (search !== "" && filtered.length === 0) {
+            return <h1 style={{ color: "var(--font-color)", backgroundColor: "var(--primary-color)", padding: 15, boxShadow: "0 0 4px black" }}>No content matched "{search}"</h1>;
         }
         else {
-            return filtered.map( (result, i) => <Email key = {i} data = {result} context = {context} />)
+            return filtered.map((result, i) => <Email key={i} data={result} context={context} />)
         }
     }
 
     return (
         <>
-        <div className="header">
-            <Paper>
-                <IconButton disableFocusRipple disableTouchRipple>
-                    <Search />
-                </IconButton>
-                <InputBase 
-                    variant = "outlined" 
-                    className={classes.textField} 
-                    value={search} 
-                    onChange={handleChange} 
-                    placeholder = "Search"
-                />
-                <IconButton disableFocusRipple disableTouchRipple onClick = {resetSearch}>
-                    <Cancel />
-                </IconButton>
-            </Paper>
-          
-            <Button variant="contained" color="primary" style={{ width: 250 }} onClick = {_ => setGenerateVisi(true)}>Generate Email</Button>
-        </div>
-        <div className="filteredEmails">
-            
-            { _renderSearchResults() }
-        </div>
-        <ReactModal
-                isOpen = {generateVisi}
-                onRequestClose = {_ => setGenerateVisi(false)}
-                style = {customStyles}
-                contentLabel = {"Generate Address"}
+            <div className="header">
+                <Paper>
+                    <IconButton disableFocusRipple disableTouchRipple>
+                        <Search />
+                    </IconButton>
+                    <InputBase
+                        variant="outlined"
+                        className={classes.textField}
+                        value={search}
+                        onChange={handleChange}
+                        placeholder="Search"
+                    />
+                    <IconButton disableFocusRipple disableTouchRipple onClick={resetSearch}>
+                        <Cancel />
+                    </IconButton>
+                </Paper>
+
+                <Button variant="contained" color="primary" style={{ width: 250 }} onClick={_ => setGenerateVisi(true)}>Generate Email</Button>
+            </div>
+            <div className="filteredEmails">
+
+                {_renderSearchResults()}
+            </div>
+            <ReactModal
+                isOpen={generateVisi}
+                onRequestClose={_ => setGenerateVisi(false)}
+                style={customStyles}
+                contentLabel={"Generate Address"}
             >
-            <h2 style = {{ color: "var(--font-color)" }}>Generate a random email</h2>
-            <h4 style = {{ color: "var(--font-color)" }}>Give the email a label for easier identification</h4>
-            <form onSubmit = {handleAddressSubmit} style = {{ display: "flex", alignItems: "center" }}>
-                <TextField name = "name" value = {form.name} onChange = {handleNameChange} label = "Label" />
-                <Button variant = "contained" color = "primary" type = "submit" style = {{ marginLeft: 10 }}>Generate</Button>
-            </form>
-        </ReactModal>
-    </>
-    
+                <h2 style={{ color: "var(--font-color)" }}>Generate a random email</h2>
+                <h4 style={{ color: "var(--font-color)" }}>Give the email a label for easier identification</h4>
+                <form onSubmit={handleAddressSubmit} style={{ display: "flex", alignItems: "center" }}>
+                    <TextField name="name" value={form.name} onChange={handleNameChange} label="Label" />
+                    <Button variant="contained" color="primary" type="submit" style={{ marginLeft: 10 }}>Generate</Button>
+                </form>
+            </ReactModal>
+        </>
+
     );
-    
+
 }
 
 export default SearchHeader;

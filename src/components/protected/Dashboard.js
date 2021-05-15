@@ -10,6 +10,7 @@ import "../../CSS/Dashboard.css"
 
 import SearchHeader from './dashboardComponents/SearchHeader';
 import WebsocketHandler from './dashboardComponents/WebsocketHandler'
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { addressesList, emailData } from './DummyData';
 import { AddressList } from './dashboardComponents/AdressList';
@@ -58,6 +59,11 @@ export default _ => {
     const [emailVisible, setEmailVisible] = useState(false);
     const [emailData, setEmailData] = useState({});
 
+    const [addressesLoading, setAddressesLoading] = useState(true)
+    const [emailsLoading, setEmailsLoading] = useState(true)
+
+    const [error, setError] = useState('')
+
     const addAddress = (addressInfo) => {
         setAddressArr([...addressArr, addressInfo])
 
@@ -99,26 +105,40 @@ export default _ => {
     }
 
     const fetchEmailsData = async () => {
-        const addressList = await fetchAdresses()
-        const addressMap = addressList.reduce((acc, address) => {
-            acc[address.id] = address
-            return acc
-        }, {})
-        setAddressArr(addressList)
-        setAddressMap(addressMap)
+        setError('')
+        try {
+            setAddressesLoading(true)
 
-        const fetchEmailsPromiseArr = addressList.map(emailInfo => fetchEmails(emailInfo.id))
-        const results = await Promise.all(fetchEmailsPromiseArr)
+            const addressList = await fetchAdresses()
+            const addressMap = addressList.reduce((acc, address) => {
+                acc[address.id] = address
+                return acc
+            }, {})
 
-        const finalObj = {}
-        for (let i = 0; i < addressList.length; i++) {
-            const emailInfo = addressList[i]
-            const emailList = results[i]
+            setAddressArr(addressList)
+            setAddressMap(addressMap)
+            setAddressesLoading(false)
+            setEmailsLoading(true)
 
-            finalObj[emailInfo.id] = emailList
+            const fetchEmailsPromiseArr = addressList.map(emailInfo => fetchEmails(emailInfo.id))
+            const results = await Promise.all(fetchEmailsPromiseArr)
+
+            const finalObj = {}
+            for (let i = 0; i < addressList.length; i++) {
+                const emailInfo = addressList[i]
+                const emailList = results[i]
+
+                finalObj[emailInfo.id] = emailList
+            }
+
+            setEmailsLoading(false)
+            setEmailMap(finalObj)
+        } catch(err) {
+            setError('Error occured while retrieving info. Please try refreshing the page')
+            setAddressesLoading(false)
+            setEmailsLoading(false)
+            console.log(err)
         }
-
-        setEmailMap(finalObj)
     }
 
     useEffect(() => {
@@ -126,6 +146,30 @@ export default _ => {
             fetchEmailsData()
         }
     }, [websocketOpen])
+
+    const _renderLoading = () => {
+        if (addressesLoading) {
+            return (
+                <div className="loading-container">
+                    <CircularProgress size={60} color="primary" />
+                    <h1 style={{ color: 'var(--font-color)' }}>Addresses Loading</h1>
+                </div>
+            )
+        } else if (emailsLoading) {
+            return (
+                <div className="loading-container">
+                    <CircularProgress size={60} color="primary" />
+                    <h1 style={{ color: 'var(--font-color)' }}>Emails Loading</h1>
+                </div>
+            )
+        } else if (error) {
+            return (
+                <div className="loading-container">
+                    <h1 style={{ color: 'var(--font-color)' }}>{error}</h1>
+                </div>
+            )
+        }
+    }
 
     return (
         <EmailStore.Provider value={{
@@ -151,7 +195,11 @@ export default _ => {
                 </div>
                 <div className="emails">
                     <SearchHeader />
-                    <AddressList />
+                    {
+                        (addressesLoading || emailsLoading || error) ? 
+                            _renderLoading() : 
+                            <AddressList />
+                    }
                 </div>
                 <ReactModal
                     isOpen={emailVisible}

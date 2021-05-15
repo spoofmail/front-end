@@ -6,6 +6,7 @@ import { useStyles } from '../customStyles';
 import EmailStore from '../../../stores/email-store';
 import ReactModal from "react-modal";
 import { customStyles } from "../customStyles";
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import Cookies from "universal-cookie";
 
@@ -21,6 +22,8 @@ const SearchHeader = props => {
         name: ""
     });
     const [generateVisi, setGenerateVisi] = useState(false);
+    const [generateLoading, setGenerateLoading] = useState(false)
+    const [generateError, setGenerateError] = useState('')
 
     const handleChange = e => {
         setSearch(e.currentTarget.value)
@@ -67,6 +70,8 @@ const SearchHeader = props => {
 
     const handleAddressSubmit = e => {
         e.preventDefault();
+        setGenerateLoading(true)
+        setGenerateError('')
 
         fetch(`${window.serverURL}/api/addresses`, {
             headers: {
@@ -78,7 +83,12 @@ const SearchHeader = props => {
             body: JSON.stringify({ addresstag: form.name })
         }).then(res => res.json()).then(data => {
             setGenerateVisi(false);
+            setGenerateLoading(false)
             context.addAddress(data.saved)
+        })
+        .catch((err) => {
+            setGenerateLoading(false)
+            setGenerateError('An error occured while generating a new address')
         })
 
     }
@@ -111,7 +121,7 @@ const SearchHeader = props => {
                     </IconButton>
                 </Paper>
 
-                <Button variant="contained" color="primary" style={{ width: 250 }} onClick={_ => setGenerateVisi(true)}>Generate Email</Button>
+                <Button variant="contained" color="primary" style={{ width: 250 }} onClick={_ => setGenerateVisi(true)}>Generate Inbox</Button>
             </div>
             <div className="filteredEmails">
 
@@ -121,13 +131,27 @@ const SearchHeader = props => {
                 isOpen={generateVisi}
                 onRequestClose={_ => setGenerateVisi(false)}
                 style={customStyles}
-                contentLabel={"Generate Address"}
+                contentLabel="Generate Address"
             >
-                <h2 style={{ color: "var(--font-color)" }}>Generate a random email</h2>
-                <h4 style={{ color: "var(--font-color)" }}>Give the email a label for easier identification</h4>
-                <form onSubmit={handleAddressSubmit} style={{ display: "flex", alignItems: "center" }}>
-                    <TextField name="name" value={form.name} onChange={handleNameChange} label="Label" />
-                    <Button variant="contained" color="primary" type="submit" style={{ marginLeft: 10 }}>Generate</Button>
+                <h2 style={{ color: "var(--font-color)", marginBottom: 50 }}>Generate a randomized inbox</h2>
+                <form onSubmit={handleAddressSubmit} style={{ display: "flex", alignItems: "center", flexDirection: 'column' }}>
+                    <TextField variant="outlined" name="name" value={form.name} onChange={handleNameChange} label="Inbox Label" style={{ marginTop: 15 }} fullWidth />
+                    <h4 style={{ color:' red' }}>{generateError}</h4>
+                    <div style={{ width: '100%', marginTop: 35, display: 'flex', justifyContent: 'space-between' }}>
+                        <Button 
+                            variant="outlined" 
+                            onClick={() => setGenerateVisi(false)}
+                            style={{ 
+                                color: "red", 
+                                borderColor: "red", 
+                                textTransform: "none" 
+                            }}>Cancel</Button>
+                        <Button variant="contained" color="primary" type="submit" style={{ marginLeft: 10, width: 104 }} disabled={generateLoading}>
+                            {
+                                generateLoading ? <CircularProgress size={25} color="primary" /> : 'Generate'
+                            }
+                        </Button>
+                    </div>
                 </form>
             </ReactModal>
         </>

@@ -13,9 +13,10 @@ export default (props) => {
     const websocket = useRef(null)
 
     const handleNewMessage = useCallback((msg) => {
+        if (msg.data.includes('Success')) return
+
         const message = JSON.parse(msg.data).finalMessage
-        if (message)
-            props.addEmail(message)
+        props.addEmail(message)
     }, [context.emailMap, props.addEmail])
 
     const connectWebsocket = () => {
@@ -23,10 +24,8 @@ export default (props) => {
         websocket.current.onopen = () => {
             context.setWebsocketOpen(true)
             setIntervalState(setInterval(() => {
-                console.log(websocket.current)
                 if (websocket.current.readyState === WebSocket.OPEN) {
                     websocket.current.send(JSON.stringify({ msg: 'ping' }))
-                    console.log('ping')
                 }
             }, 15000))
         }

@@ -31,7 +31,7 @@ export default (props) => {
         }
 
         websocket.current.onerror = () => {
-            connectWebsocket()
+
         }
 
         websocket.current.onclose = () => {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Router, Route, Switch, Redirect } from "react-router-dom";
 import history from "./history";
 
@@ -6,11 +6,14 @@ import './CSS/App.css';
 import Login from './components/Login';
 import ProtectedRoutes from "./components/ProtectedRoutes";
 import Cookies from "universal-cookie";
+import { ThemeProvider } from '@mui/styles';
+import { createTheme } from '@mui/material/styles';
 let cookies = new Cookies();
 
+// @ts-ignore
 window.serverURL = `https://spoofmail-lambda.herokuapp.com`;
 
-const isAuthed = _ => {
+const isAuthed = () => {
     let token = cookies.get("token");
     return token && token.length > 10;
 };
@@ -28,14 +31,17 @@ const ProtectedRoute = ({ component: Component, ...rest }) => (
 )
 
 function App() {
+    const theme = useMemo(() => createTheme(), [])
     return (
-        <Router history={history}>
-            <Switch>
-                <Route exact path="/" component={Login} />
-                <Route exact path="/login" component={Login} />
-                <ProtectedRoute component={ProtectedRoutes} />
-            </Switch>
-        </Router>
+        <ThemeProvider theme={theme}>
+            <Router history={history}>
+                <Switch>
+                    <Route exact path="/" component={Login} />
+                    <Route exact path="/login" component={Login} />
+                    <ProtectedRoute component={ProtectedRoutes} />
+                </Switch>
+            </Router>
+        </ThemeProvider>
     );
 }
 

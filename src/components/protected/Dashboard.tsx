@@ -10,23 +10,22 @@ import "../../CSS/Dashboard.css"
 
 import SearchHeader from './dashboardComponents/SearchHeader';
 import WebsocketHandler from './dashboardComponents/WebsocketHandler'
-import CircularProgress from '@material-ui/core/CircularProgress';
+import CircularProgress from '@mui/material/CircularProgress';
 
-import { addressesList, emailData } from './DummyData';
 import { AddressList } from './dashboardComponents/AdressList';
-import { ViewEmail, Email } from './dashboardComponents/Email';
+import { ViewEmail } from './dashboardComponents/Email';
 import "../../CSS/Dashboard.css"
 import { customStyles } from './customStyles';
 
 import Cookies from "universal-cookie";
-import { Parser } from "html-to-react";
 let cookies = new Cookies();
 
 
 ReactModal.setAppElement('#root')
 
-export const fetchAdresses = _ => {
+export const fetchAdresses = (): Promise<Array<any>> => {
     return new Promise(function (resolve, reject) {
+        // @ts-ignore
         fetch(`${window.serverURL}/api/addresses`, {
             headers: {
                 'Authorization': cookies.get("token")
@@ -39,6 +38,7 @@ export const fetchAdresses = _ => {
 
 export const fetchEmails = id => {
     return new Promise(function (resolve, reject) {
+        // @ts-ignore
         fetch(`${window.serverURL}/api/messages/${id}`, {
             headers: {
                 'Authorization': cookies.get("token")
@@ -49,7 +49,7 @@ export const fetchEmails = id => {
     })
 }
 
-export default _ => {
+export default () => {
     const [websocket, setWebsocket] = useState(null)
     const [websocketOpen, setWebsocketOpen] = useState(false)
     const [addressArr, setAddressArr] = useState([])
@@ -109,7 +109,7 @@ export default _ => {
         try {
             setAddressesLoading(true)
 
-            const addressList = await fetchAdresses()
+            const addressList: Array<any> = await fetchAdresses()
             const addressMap = addressList.reduce((acc, address) => {
                 acc[address.id] = address
                 return acc
@@ -174,6 +174,7 @@ export default _ => {
     return (
         <EmailStore.Provider value={{
             websocket,
+            // @ts-ignore
             setWebsocket,
             websocketOpen,
             setWebsocketOpen,

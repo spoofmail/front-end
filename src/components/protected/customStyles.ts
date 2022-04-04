@@ -1,6 +1,5 @@
 
-import { makeStyles } from '@material-ui/core/styles';
-
+import makeStyles from '@mui/styles/makeStyles';
 
 export const customStyles = {
     content : {
@@ -20,8 +19,8 @@ export const customStyles = {
 
 export const useStyles = makeStyles(theme => ({
     textField: {
-        marginLeft: theme.spacing(1),
-        marginRight: theme.spacing(1),
+        marginLeft: '8px',
+        marginRight: '8px',
         width: 250,
       },
       resize: {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Nav from "./Nav";
-import { TextField, Button } from "@material-ui/core";
+import { TextField, Button } from "@mui/material";
 
 import "../CSS/Login.css"
 
@@ -8,7 +8,7 @@ import history from "../history";
 import Cookies from "universal-cookie";
 let cookies = new Cookies();
 
-export default _ => {
+export default () => {
     const [isLogin, setIsLogin] = useState(true);
 
     return (
@@ -18,8 +18,8 @@ export default _ => {
                 <img src = "./spoof-mail-logo.jpg"></img>
                 <div className={"info " + (isLogin ? "isLogin" : "isSignup")}>
                     <div className="login-choice">
-                        <div className={isLogin ? "active" : ""} onClick={_ => setIsLogin(true)} left="true">Login</div>
-                        <div className={!isLogin ? "active" : ""} onClick={_ => setIsLogin(false)} left="false">Signup</div>
+                        <div className={isLogin ? "active" : ""} onClick={_ => setIsLogin(true)}>Login</div>
+                        <div className={!isLogin ? "active" : ""} onClick={_ => setIsLogin(false)}>Signup</div>
                     </div>
 
                     {isLogin ? <LoginComponent /> : <SignupComponent />}
@@ -37,7 +37,7 @@ const LoginComponent = props => {
     const [error, setError] = useState(false);
     const [requested, setRequested] = useState(false);
 
-    useEffect(_ => {
+    useEffect(() => {
         document.title = "Login"
     }, [])
 
@@ -69,6 +69,7 @@ const LoginComponent = props => {
         setRequested(true);
         setError(false);
 
+        // @ts-ignore
         fetch(`${window.serverURL}/api/auth/login`, {
             headers: {
                 "Accept": "application/json",
@@ -122,7 +123,7 @@ const SignupComponent = props => {
     })
     const [requested, setRequested] = useState(false);
 
-    useEffect(_ => {
+    useEffect(() => {
         document.title = "Signup";
     }, [])
 
@@ -183,6 +184,7 @@ const SignupComponent = props => {
             return;
         }
 
+        // @ts-ignore
         fetch(`${window.serverURL}/api/auth/register`, {
             headers: {
                 "Accept": "application/json",

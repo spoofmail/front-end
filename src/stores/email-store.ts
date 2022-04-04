@@ -5,6 +5,7 @@ export default React.createContext({
     websocket: {},
     websocketOpen: false,
     setWebsocketOpen: (status) => {},
+    setWebsocket: () => {},
     addressArr: [],
     addressMap: {},
     emailMap: {},

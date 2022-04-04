@@ -7,7 +7,6 @@ import { faTrashAlt} from "@fortawesome/free-solid-svg-icons";
 
 import { Parser } from "html-to-react";
 import Cookies from "universal-cookie";
-import { PinDropSharp } from '@material-ui/icons';
 
 let cookies = new Cookies();
 const htmlToReact = new Parser();
@@ -15,6 +14,7 @@ const htmlToReact = new Parser();
 const Email = ({ data, context, deleteEmail }) => {
     const handleDeleteEmail = e => {
         e.stopPropagation();
+        // @ts-ignore
         fetch(`${window.serverURL}/api/messages/${data.id}`, {
             headers: {
                 'Authorization': cookies.get("token"),

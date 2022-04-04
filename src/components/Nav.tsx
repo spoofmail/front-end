@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom"
-import { Button } from "@material-ui/core";
-import { Opacity } from "@material-ui/icons";
+import { Button } from "@mui/material";
+import { Opacity } from "@mui/icons-material";
 
 import useDarkMode from "../hooks/useDarkMode"
 
@@ -37,7 +37,7 @@ let themeData = {
 export default props => {
     const [darkMode, setDarkMode] = useDarkMode();
 
-    useEffect(_ => {
+    useEffect(() => {
         Object.keys(themeData[darkMode + ""]).forEach(key => {
             document.documentElement.style.setProperty(key, themeData[darkMode + ""][key]);
         })
@@ -48,18 +48,18 @@ export default props => {
         history.push("/login");
     }
 
-    const _renderHomeButton = _ => {
+    const _renderHomeButton = () => {
         if (props.isLogin) return <Link to="/">Home</Link>;
         else return (
             <Link to = "/dashboard" style = {{ visibility: "hidden" }}></Link>
         );
     }
 
-    const handleDarkMode = _ => {
+    const handleDarkMode = () => {
         setDarkMode(!darkMode);
     }
 
-    const _renderRight = _ => {
+    const _renderRight = () => {
         return (
             <div style = {{ display: "flex", alignItems: "center" }}>
                 <Opacity className = "opacity-style" onClick = {handleDarkMode} />

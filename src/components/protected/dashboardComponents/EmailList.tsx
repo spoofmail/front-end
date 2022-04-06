@@ -18,7 +18,7 @@ const EmailList = props => {
         let reversed = Array.from(myEmails).reverse();
         if(myEmails.length !== 0)
             return (
-                <>{reversed.map((e: any, i) => <Email key = {e.id} data = {e} context = {context} deleteEmail={deleteEmail} />)}</>
+                <>{reversed.map((e: any, i) => <Email key = {e.id} data = {e} deleteEmail={deleteEmail} />)}</>
             )
         else return <h3 style = {{ backgroundColor: "var(--primary-color)", color: "var(--font-color)", padding: 15, margin: 0 }}>- No Emails here</h3>
     }

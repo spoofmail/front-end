@@ -101,10 +101,6 @@ body {
     margin: 5px 0 !important;
 }
 
-.MuiButton-root {
-    margin-top: 10px !important;
-}
-
 .MuiOutlinedInput-notchedOutline {
     border-color: var(--input-color) !important;
 }

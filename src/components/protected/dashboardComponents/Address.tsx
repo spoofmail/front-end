@@ -10,12 +10,17 @@ import AnimateHeight from 'react-animate-height';
 import Cookies from "universal-cookie";
 
 import "../../../CSS/github.css"
+import { useAppDispatch, useAppSelector } from "../../../hooks/useRedux";
+import { removeAddress } from "../../../redux/address/addressSlice";
 
 let cookies = new Cookies();
 
 const style = { color: "var(--font-color)", fontSize: "2rem", cursor: "pointer" }
 
-const Address = ({ data, id, removeAddress }) => {
+const Address = ({ id }) => {
+    const dispatch = useAppDispatch()
+    const data = useAppSelector(({ address }) => address.map[id])
+
     const [expanded, setExpanded] = useState(false);
 
     const [nameEdit, setNameEdit] = useState(data.addresstag);
@@ -82,7 +87,7 @@ const Address = ({ data, id, removeAddress }) => {
             },
             method: "DELETE"
         }).then(res => res.json()).then(data => {
-            removeAddress(id)
+            dispatch(removeAddress({ id }))
         })
     }
 
@@ -91,8 +96,8 @@ const Address = ({ data, id, removeAddress }) => {
             <div className="title" onMouseLeave={handleEditBlur}>
                 <div>
                     {_renderChevron()}
-                    {_renderName()}
                     {_renderEmail()}
+                    {_renderName()}
                 </div>
                 <div>
                     <Button

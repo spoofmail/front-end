@@ -11,7 +11,7 @@ import Cookies from "universal-cookie";
 let cookies = new Cookies();
 const htmlToReact = new Parser();
 
-const Email = ({ data, context, deleteEmail }) => {
+const Email = ({ data, deleteEmail }) => {
     const handleDeleteEmail = e => {
         e.stopPropagation();
         // @ts-ignore
@@ -26,7 +26,7 @@ const Email = ({ data, context, deleteEmail }) => {
     }
 
     return (
-        <div className = "email" onClick = {_ => clickEmail(data, context)}>
+        <div className = "email">
             <div>
                 <h3>From: <span>{data.from}</span></h3>
                 <h3>Subject: <span>{data.subject}</span></h3>

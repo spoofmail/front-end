@@ -1,78 +1,60 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 
-
-import EmailStore from "../../stores/email-store";
-
-import ReactModal from "react-modal";
-
-
-import "../../CSS/Dashboard.css"
-
-import SearchHeader from './dashboardComponents/SearchHeader';
-import WebsocketHandler from './dashboardComponents/WebsocketHandler'
 import CircularProgress from '@mui/material/CircularProgress';
+import SearchHeader from './dashboardComponents/SearchHeader';
+import EmailItem from './dashboardComponents/EmailItem';
 
-import { AddressList } from './dashboardComponents/AdressList';
-import { ViewEmail } from './dashboardComponents/Email';
-import "../../CSS/Dashboard.css"
-import { customStyles } from './customStyles';
-
-import Cookies from "universal-cookie";
 import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
 import { fetchAddresses } from "../../redux/address/addressSlice";
 import useWebsocket from "../../hooks/useWebsocket";
-let cookies = new Cookies();
-
-
-ReactModal.setAppElement('#root')
-
-export const fetchEmails = id => {
-    return new Promise(function (resolve, reject) {
-        // @ts-ignore
-        fetch(`${window.serverURL}/api/messages/${id}`, {
-            headers: {
-                'Authorization': cookies.get("token")
-            }
-        }).then(res => res.json()).then(data => {
-            resolve(data);
-        })
-    })
-}
+import "../../CSS/Dashboard.css"
+import useFetchEmails from "../../hooks/useFetchEmails";
 
 export default () => {
+    const dispatch = useAppDispatch()
+    const userId = useAppSelector(({ user }) => user.userId)
     const addressesLoading = useAppSelector(({ address }) => address.loading)
     const addressStatus = useAppSelector(({ address }) => address.status)
+    const addressIDList = useAppSelector(({ address }) => address.ids)
 
-    const dispatch = useAppDispatch()
+    const [page, setPage] = useState(1)
 
     const handleWebsocketEvent = (ev: MessageEvent<any>) => {
+        console.log(ev)
         const message = JSON.parse(ev.data)
 
         console.log(message)
 
         switch(message.type) {
-            case '':
+            case 'auth-success':
+                break
+            case 'auth-reject':
+                break
+            case 'message':
                 break
         }
     }
 
     useWebsocket({
+        userId,
         onEvent: handleWebsocketEvent,
         pingInterval: 60000,
     })
 
-    const [websocket, setWebsocket] = useState(null)
-    const [websocketOpen, setWebsocketOpen] = useState(true)
-
-    useEffect(() => {
-        if (websocketOpen && !addressesLoading && addressStatus === 'pending') {
-            
-        }
-    }, [websocketOpen, addressStatus, addressesLoading])
-
     useEffect(() => {
         dispatch(fetchAddresses())
     }, [])
+
+    const {
+        data,
+        total,
+        loading,
+        error,
+    } = useFetchEmails({
+        userId,
+        page,
+        addressIDList,
+    })
 
     const _renderLoading = () => {
         if (addressesLoading) {
@@ -95,24 +77,31 @@ export default () => {
         <div className="dash-container">
             <div className="title">
                 <h1>Your Inboxes</h1>
-                { /* <WebsocketHandler addEmail={() => {}} /> */ }
             </div>
             <div className="emails">
                 <SearchHeader />
                 {
                     (addressesLoading || addressStatus === 'error') ? 
                         _renderLoading() : 
-                        <AddressList />
+                        <></>
                 }
+                {
+                    loading && !error && (
+                        <CircularProgress />
+                    )
+                }
+                {
+                    !loading && error && (
+                        <h1 className="error" style={{ color: 'red' }}>{error}</h1>
+                    )
+                }
+                {
+                    !loading && !error && data.length > 0 && (
+                        data.map(email => <EmailItem />)
+                    )
+                }
+                <p>{loading || error ? 'loading' : total}</p>
             </div>
-            <ReactModal
-                isOpen={false}
-                onRequestClose={() => {}}
-                style={customStyles}
-                contentLabel={"Email"}
-            >
-                <ViewEmail data={null} />
-            </ReactModal>
         </div>
     );
 }

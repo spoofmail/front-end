@@ -6,6 +6,9 @@ import "../CSS/Login.css"
 
 import history from "../history";
 import Cookies from "universal-cookie";
+import { SpoofmailAPI } from "../App";
+import { useDispatch } from "react-redux";
+import { setUser } from "../redux/user/userSlice";
 let cookies = new Cookies();
 
 export default () => {
@@ -30,6 +33,8 @@ export default () => {
 }
 
 const LoginComponent = props => {
+    const dispatch = useDispatch()
+
     const [form, setForm] = useState({
         username: "",
         password: ""
@@ -47,15 +52,15 @@ const LoginComponent = props => {
     }
 
     const handleSuccess = res => {
+        console.log(res)
         setRequested(false);
         if(res.status !== 200) {
             setError(true);
         }
         else {
-            res.json().then(data => {
-                cookies.set("token", data.token);
-                history.push("/dashboard");
-            })
+            dispatch(setUser(res.data.user))
+            localStorage.setItem('user_token', res.data.token)
+            history.push("/dashboard");
         }
     }
 
@@ -69,17 +74,11 @@ const LoginComponent = props => {
         setRequested(true);
         setError(false);
 
-        // @ts-ignore
-        fetch(`${window.serverURL}/api/auth/login`, {
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-            },
-            method: "POST",
-            body: JSON.stringify(form)
-        })
-        .then(handleSuccess)
-        .catch(handleError)
+        console.log({ username: form.username, password: form.password })
+
+        SpoofmailAPI.login({ username: form.username, password: form.password })
+            .then(handleSuccess)
+            .catch(handleError)
     }
 
     return (
@@ -111,6 +110,8 @@ const LoginComponent = props => {
 }
 
 const SignupComponent = props => {
+    const dispatch = useDispatch()
+    
     const [form, setForm] = useState({
         username: "",
         password: "",
@@ -144,10 +145,9 @@ const SignupComponent = props => {
             });
         }
         else {
-            res.json().then(data => {
-                cookies.set("token", data.token);
-                history.push("/dashboard");
-            })
+            dispatch(setUser(res.data.user))
+            localStorage.setItem('user_token', res.data.token)
+            history.push("/dashboard");
         }
     }
 
@@ -184,15 +184,7 @@ const SignupComponent = props => {
             return;
         }
 
-        // @ts-ignore
-        fetch(`${window.serverURL}/api/auth/register`, {
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-            },
-            method: "POST",
-            body: JSON.stringify({ username: form.username, password: form.password })
-        })
+        SpoofmailAPI.register({ username: form.username, password: form.password })
             .then(handleSuccess)
             .catch(handleError)
     }

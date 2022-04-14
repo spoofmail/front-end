@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import getAllAddresses from '../../api/spoofmail/addresses/fetchAll'
+import { SpoofmailAPI } from '../../App'
 import Address from '../../types/Address'
 
 interface AddressState {
@@ -62,8 +62,8 @@ export const addressSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchAddresses.fulfilled, (state, action) => {
-      state.ids = action.payload.map(address => address.id)
-      const map = action.payload.reduce((byId, user) => {
+      state.ids = action.payload.addresses.map(address => address.id)
+      const map = action.payload.addresses.reduce((byId, user) => {
         byId[user.id] = user
         return byId
       }, {})
@@ -95,7 +95,10 @@ export default addressSlice.reducer
 export const fetchAddresses = createAsyncThunk(
   'addresses/all',
   async () => {
-    const response = await getAllAddresses()
-    return response
+    const response = await SpoofmailAPI.getAllAddresses()
+
+    console.log(response)
+
+    return response.data
   }
 )

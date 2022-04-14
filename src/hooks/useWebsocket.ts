@@ -2,21 +2,25 @@ import { useEffect, useMemo, useRef, useState } from "react"
 import Cookies from "universal-cookie"
 
 interface WebsocketOptions {
+    userId: string
     pingInterval: number
     onEvent: (event: MessageEvent<any>) => void
 }
 export default function useWebsocket({
     pingInterval = 60000,
     onEvent,
+    userId,
 }: WebsocketOptions) {
     const [websocketState, setWebsocketState] = useState<'idle' | 'connected'>('idle')
-    const cookies = new Cookies()
 
     const websocket = useRef<WebSocket>(null)
     const interval = useRef(0)
     
     const connectWebsocket = () => {
-        websocket.current = new WebSocket(`wss://spoofmail-lambda.herokuapp.com/ws?token=${cookies.get("token")}`)
+        const params = new URLSearchParams({
+            userId,
+        })
+        websocket.current = new WebSocket(`ws://localhost:8080/ws?${params.toString()}`)
         websocket.current.onopen = () => {
             setWebsocketState('connected')
             clearInterval(interval.current)
@@ -26,6 +30,11 @@ export default function useWebsocket({
                     websocket.current.send(JSON.stringify({ msg: 'ping' }))
                 }
             }, pingInterval)
+
+            websocket.current.send(JSON.stringify({
+                type: 'auth',
+                token: localStorage.getItem('user_token')
+            }))
         }
 
         websocket.current.onerror = (ev: any) => {
@@ -40,7 +49,8 @@ export default function useWebsocket({
     }
 
     useEffect(() => {
-        connectWebsocket()
+        if (userId)
+            connectWebsocket()
 
         return () => {
             clearInterval(interval.current)
@@ -48,5 +58,5 @@ export default function useWebsocket({
                 websocket.current.close()
             }
         }
-    }, [])
+    }, [userId])
 }

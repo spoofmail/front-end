@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Button, Paper, InputBase, IconButton } from "@mui/material";
 import { Search, Cancel } from "@mui/icons-material"
-import Email from './Email';
 import { useStyles } from '../customStyles';
 
 import AddEmailModal from "../../AddEmail";
@@ -50,12 +49,7 @@ const SearchHeader = props => {
     }
 
     const _renderSearchResults = () => {
-        if (search !== "" && filtered.length === 0) {
-            return <h1 style={{ color: "var(--font-color)", backgroundColor: "var(--primary-color)", padding: 15, boxShadow: "0 0 4px black" }}>No content matched "{search}"</h1>;
-        }
-        else {
-            return filtered.map((result, i) => <Email key={i} data={result} deleteEmail={() => {}} />)
-        }
+        return <></>
     }
 
     return <>
@@ -75,7 +69,7 @@ const SearchHeader = props => {
                 </IconButton>
             </Paper>
 
-            <Button variant="contained" color="primary" style={{ width: 250 }} onClick={_ => setGenerateVisi(true)}>Generate Inbox</Button>
+            <Button variant="contained" color="primary" onClick={_ => setGenerateVisi(true)}>Generate Inbox</Button>
         </div>
         <div className="filteredEmails">
 

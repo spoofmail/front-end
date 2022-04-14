@@ -4,6 +4,7 @@ import React, { FC, useCallback, useMemo, useState } from "react"
 import Cookies from "universal-cookie"
 import { useAppDispatch } from "../hooks/useRedux"
 import { addAddress } from "../redux/address/addressSlice"
+import { SpoofmailAPI } from '../App'
 
 interface AddEmailModalProps {
     open: boolean
@@ -16,7 +17,8 @@ export const AddEmailModal: FC<AddEmailModalProps> = ({
     const dispatch = useAppDispatch()
 
     const handleAddEmailSuccess = useCallback((data: any) => {
-        dispatch(addAddress({ address: data.saved }))
+        console.log(dispatch, data)
+        dispatch(addAddress({ address: data.data.saved }))
         onClose()
     }, [dispatch])
 
@@ -45,10 +47,20 @@ export const AddEmailModal: FC<AddEmailModalProps> = ({
     }
 
     return (
-        <Dialog open={open} onClose={handleModalClose} fullWidth>
+        <Dialog 
+            open={open} 
+            onClose={handleModalClose} 
+            fullWidth
+            PaperProps={{
+                style: {
+                    backgroundColor: 'var(--background-color)',
+                    color: 'var(--font-color)'
+                }
+            }}
+        >
             <DialogTitle>New Inbox</DialogTitle>
             <DialogContent>
-                <DialogContentText>
+                <DialogContentText sx={{ color: 'var(--font-color)', marginBottom: '10px' }}>
                     Generate a randomized inbox
                 </DialogContentText>
                 <TextField
@@ -57,14 +69,14 @@ export const AddEmailModal: FC<AddEmailModalProps> = ({
                     label="Email Label"
                     type="text"
                     fullWidth
-                    variant="standard"
+                    variant="outlined"
                     value={name}
                     onChange={handleLabelChange}
                 />
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleModalClose} disabled={loading}>Cancel</Button>
-                <LoadingButton onClick={handleCreateEmail} loading={loading} variant="outlined">
+                <LoadingButton onClick={handleCreateEmail} loading={loading} variant="contained">
                     Generate
                 </LoadingButton>
             </DialogActions>
@@ -90,25 +102,17 @@ export function useAddEmail({
         setLoading(true)
         setError('')
 
-        // @ts-ignore
-        fetch(`${window.serverURL}/api/addresses`, {
-            headers: {
-                'Authorization': cookies.get("token"),
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            },
-            method: "POST",
-            body: JSON.stringify({ addresstag: name })
-        }).then(res => res.json()).then(data => {
-            setLoading(false)
-            onSuccess(data)
-        })
-        .catch((err) => {
-            setLoading(false)
-            setError('An error occured while generating a new address')
-            onError()
-        })
-    }, [name])
+        SpoofmailAPI.createAddress({ addresstag: name })
+            .then(data => {
+                setLoading(false)
+                onSuccess(data)
+            })
+            .catch((err) => {
+                setLoading(false)
+                setError('An error occured while generating a new address')
+                onError()
+            })
+    }, [name, onSuccess, onError])
 
     return useMemo(() => ({
         name,

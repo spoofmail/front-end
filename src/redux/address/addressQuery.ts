@@ -2,11 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import Cookies from 'universal-cookie';
 import Address from '../../types/Address'
 
-
 let cookies = new Cookies();
-
-// @ts-ignore
-window.serverURL = `https://spoofmail-lambda.herokuapp.com`;
 
 // Define a service using a base URL and expected endpoints
 export const addressApi = createApi({

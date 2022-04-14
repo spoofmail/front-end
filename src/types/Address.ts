@@ -1,6 +1,6 @@
 export default interface Address {
-    id: number
+    id: string
     addressname: string
     addresstag: string
-    user_id: number
+    user_id: string
 }

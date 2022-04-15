@@ -3,8 +3,6 @@ import { Button, Paper, InputBase, IconButton } from "@mui/material";
 import { Search, Cancel } from "@mui/icons-material"
 import { useStyles } from '../customStyles';
 
-import AddEmailModal from "../../AddEmail";
-
 const SearchHeader = props => {
     const classes = useStyles();
 
@@ -75,7 +73,6 @@ const SearchHeader = props => {
 
             {_renderSearchResults()}
         </div>
-        <AddEmailModal open={generateVisi} onClose={() => setGenerateVisi(false)} />
     </>;
 
 }

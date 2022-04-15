@@ -1,16 +1,18 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Router, Route, Switch, Redirect } from "react-router-dom";
-import history from "./history";
-import { store } from './redux/store';
-
-import './CSS/App.css';
-import Login from './components/Login';
-import ProtectedRoutes from "./components/ProtectedRoutes";
-import { ThemeProvider } from '@mui/styles';
-import { createTheme } from '@mui/material/styles';
+import { useMemo, useState } from 'react';
+import { ThemeProvider } from '@mui/material/styles';
 import { Provider } from 'react-redux';
+import { Route, BrowserRouter, Navigate, Routes, useLocation } from "react-router-dom";
 
+import Login from './components/Login';
+import Layout from './components/Layout';
+
+import { store } from './redux/store';
 import CreateSpoofmailAPI from './api/spoofmail'
+import Emails from './components/protected/Emails';
+import createCustomTheme from './util/createCustomTheme';
+import NotFound404 from './components/protected/404'
+import './CSS/App.css';
+import Addresses from './components/protected/Addresses';
 
 function getAuthToken() {
     return localStorage.getItem('user_token')
@@ -31,22 +33,8 @@ const isAuthed = () => {
     return token && token.length > 10;
 };
 
-const ProtectedRoute = ({ component: Component, ...rest }) => {
-    return (
-        <Route {...rest} render={(props) =>
-            isAuthed()
-                ? <Component {...props} />
-                : <Redirect to={{
-                    pathname: '/login',
-                    state: { from: props.location }
-                }} />
-            }
-        />
-    )
-}
-
 function App() {
-    const theme = useMemo(() => createTheme(), [])
+    const theme = useMemo(() => createCustomTheme(), [])
 
     const [authed, setAuthed] = useState(false)
 
@@ -61,18 +49,43 @@ function App() {
     }, [])*/
 
     return (
-        <ThemeProvider theme={theme}>
-            <Provider store={store}>
-                <Router history={history}>
-                    <Switch>
-                        <Route exact path="/" component={Login} />
-                        <Route exact path="/login" component={Login} />
-                        <ProtectedRoute component={ProtectedRoutes} />
-                    </Switch>
-                </Router>
-            </Provider>
-        </ThemeProvider>
+        // @ts-ignore
+        <Provider store={store}>
+            <ThemeProvider theme={theme}>
+                <BrowserRouter>
+                    <Routes>
+                        <Route path="/login" element={<Login />} />
+                        <Route element={<Layout />}>
+                            <Route index element={<Protected component={<Emails />} />} />
+                            <Route path="/" element={<Protected component={<Emails />} />} />
+                            <Route path="/emails" element={<Protected component={<Emails />} />} />
+                            <Route path="/addresses" element={<Protected component={<Addresses />} />} />
+                            <Route path="/settings" element={<Protected component={<NotFound404 />} />} />
+                            <Route path="*" element={<Protected component={<NotFound404 />} />} />
+                        </Route>
+                    </Routes>
+                </BrowserRouter>
+            </ThemeProvider>
+        </Provider>
     );
 }
+
+interface ProtectedProps {
+    component: JSX.Element
+}
+const Protected = ({ component }: ProtectedProps) => {
+    const isAuthenticated = isAuthed()
+    const location = useLocation()
+
+    if (!true) {
+        return <></> // <PageLoadingContainer><CircularProgress size={34} /></PageLoadingContainer>
+    }
+
+    if (!isAuthenticated) {
+        return <Navigate to="/login" state={{ from: location }} replace />
+    }
+
+    return component
+};
 
 export default App;

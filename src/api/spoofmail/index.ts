@@ -8,6 +8,7 @@ import { register } from './auth/register';
 import { getSession } from './auth/session';
 import { deleteEmail } from './emails/deleteEmail';
 import { getAllEmails } from './emails/getAll';
+import { getByText } from './emails/getByText';
 
 interface SpoofmailAPIOptions {
     environment: 'development' | 'production'
@@ -61,6 +62,7 @@ export default ({
         register: register(instance),
 
         getAllEmails: getAllEmails(instance),
+        getEmailsByText: getByText(instance),
         deleteEmail: deleteEmail(instance),
     }
 }

@@ -2,7 +2,7 @@
     position: sticky;
     top: 0;
     background-color: var(--primary-color);
-    height: 50px;
+    min-height: 50px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -31,9 +31,6 @@
 
 .navigation img {
     font-size: 2.5rem;
-    position: fixed;
-    left: 50%;
-    transform: translateX(-50%);
     margin: 0;
     color: var(--font-color);
     border-radius: 25px;
@@ -43,8 +40,7 @@
 
 .navigation img.active {
     left: 0;
-    transform: translateX(0);
-    margin-left: 15px;
+    margin-left: 104px;
     visibility: visible;
 }
 

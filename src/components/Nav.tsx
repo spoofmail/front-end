@@ -1,20 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom"
-import { Button, FormControlLabel, Switch } from "@mui/material";
-import { Opacity } from "@mui/icons-material";
+import { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom"
+import { Button } from "@mui/material";
 import Brightness6Icon from '@mui/icons-material/Brightness6';
 
 import useDarkMode from "../hooks/useDarkMode"
 
 import "../CSS/Nav.css"
 
-import history from "../history"
-import Cookies from "universal-cookie";
-import { useDispatch } from "react-redux";
-import { useAppSelector } from "../hooks/useRedux";
-import { toggleRefreshActive } from "../redux/refresh/refreshSlice";
 import RefreshToggle from "./RefreshToggle";
-let cookies = new Cookies();
 
 let themeData = {
     "true": {
@@ -41,6 +34,7 @@ let themeData = {
 
 export default props => {
     const [darkMode, setDarkMode] = useDarkMode();
+    const navigate = useNavigate()
 
     useEffect(() => {
         Object.keys(themeData[darkMode + ""]).forEach(key => {
@@ -49,8 +43,8 @@ export default props => {
     }, [darkMode])
 
     const handleLogOut = _ => {
-        cookies.remove("token");
-        history.push("/login");
+        localStorage.removeItem("user_token");
+        navigate('/login', { replace: true })
     }
 
     const handleDarkMode = () => {
@@ -64,7 +58,6 @@ export default props => {
             ) : (
                 <Link to = "/dashboard" style = {{ visibility: "hidden" }}></Link>
             ) }
-            <img src = "./spoof-mail-logo.jpg" className = {props.isLogin ? "" : "active"}></img>
             <div style = {{ display: "flex", alignItems: "center" }}>
                 <RefreshToggle />
                 <Brightness6Icon htmlColor={"var(--font-color)"} onClick = {handleDarkMode} sx={{ marginRight: '10px', cursor: 'pointer' }} />

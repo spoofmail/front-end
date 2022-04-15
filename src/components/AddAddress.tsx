@@ -5,6 +5,7 @@ import Cookies from "universal-cookie"
 import { useAppDispatch } from "../hooks/useRedux"
 import { addAddress } from "../redux/address/addressSlice"
 import { SpoofmailAPI } from '../App'
+import useMobileQuery from "../hooks/useMobileQuery"
 
 interface AddEmailModalProps {
     open: boolean
@@ -14,6 +15,8 @@ export const AddEmailModal: FC<AddEmailModalProps> = ({
     open, 
     onClose,
 }) => {
+    const isMobile = useMobileQuery(598)
+    
     const dispatch = useAppDispatch()
 
     const handleAddEmailSuccess = useCallback((data: any) => {
@@ -58,15 +61,15 @@ export const AddEmailModal: FC<AddEmailModalProps> = ({
                 }
             }}
         >
-            <DialogTitle>New Inbox</DialogTitle>
+            <DialogTitle>New Address</DialogTitle>
             <DialogContent>
                 <DialogContentText sx={{ color: 'var(--font-color)', marginBottom: '10px' }}>
-                    Generate a randomized inbox
+                    Generate a randomized address
                 </DialogContentText>
                 <TextField
                     autoFocus
                     margin="dense"
-                    label="Email Label"
+                    label="Address Label"
                     type="text"
                     fullWidth
                     variant="outlined"

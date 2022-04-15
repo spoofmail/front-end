@@ -4,12 +4,10 @@ import { TextField, Button } from "@mui/material";
 
 import "../CSS/Login.css"
 
-import history from "../history";
-import Cookies from "universal-cookie";
 import { SpoofmailAPI } from "../App";
 import { useDispatch } from "react-redux";
 import { setUser } from "../redux/user/userSlice";
-let cookies = new Cookies();
+import { useLocation, useNavigate } from "react-router";
 
 export default () => {
     const [isLogin, setIsLogin] = useState(true);
@@ -34,6 +32,11 @@ export default () => {
 
 const LoginComponent = props => {
     const dispatch = useDispatch()
+    const location = useLocation()
+    const navigate = useNavigate()
+
+    // @ts-ignore
+    const from = location.state?.from?.pathname || "/emails"
 
     const [form, setForm] = useState({
         username: "",
@@ -60,13 +63,14 @@ const LoginComponent = props => {
         else {
             dispatch(setUser(res.data.user))
             localStorage.setItem('user_token', res.data.token)
-            history.push("/dashboard");
+            navigate(from, { replace: true })
         }
     }
 
     const handleError = err => {
         console.log(err);
         setRequested(false);
+        setError(true)
     }
 
     const handleSubmit = e => {
@@ -82,7 +86,7 @@ const LoginComponent = props => {
     }
 
     return (
-        <form onSubmit={handleSubmit}>
+        <>
             <TextField 
                 label="Username" 
                 variant = "outlined" 
@@ -90,7 +94,7 @@ const LoginComponent = props => {
                 onChange={handleChange} 
                 type = "text" 
                 name = "username" 
-            />
+                />
             <TextField 
                 label="Password" 
                 variant = "outlined" 
@@ -98,19 +102,24 @@ const LoginComponent = props => {
                 onChange={handleChange} 
                 type = "password" 
                 name = "password" 
-            />
+                />
 
             <p style = {{ color: "red" }}>{error ? "Username or password incorrect" : ""}</p>
 
-            <Button variant="contained" color="primary" type = "submit">
+            <Button variant="contained" color="primary" onClick={handleSubmit}>
                 {requested ? "Checking..." : "Log in"}
             </Button>
-        </form>
+        </>
     );
 }
 
 const SignupComponent = props => {
     const dispatch = useDispatch()
+    const location = useLocation()
+    const navigate = useNavigate()
+
+    // @ts-ignore
+    const from = location.state?.from?.pathname || "/emails"
     
     const [form, setForm] = useState({
         username: "",
@@ -147,7 +156,7 @@ const SignupComponent = props => {
         else {
             dispatch(setUser(res.data.user))
             localStorage.setItem('user_token', res.data.token)
-            history.push("/dashboard");
+            navigate(from, { replace: true })
         }
     }
 
@@ -166,15 +175,7 @@ const SignupComponent = props => {
 
         setRequested(true);
 
-        Object.keys(form).forEach(key => {
-            if(!form[key] || form[key] === "" || form[key].length === 0) {
-                newErrors[key] = "Field cannot be blank";
-            }
-            setError(newErrors);
-            return;
-        })
-
-        if(form['password'] !== form['confirmPassword']) {
+        if(form.password !== form.confirmPassword) {
             newErrors = {
                 ...newErrors,
                 password: "Passwords dont match",
@@ -190,7 +191,7 @@ const SignupComponent = props => {
     }
 
     return (
-        <form onSubmit={handleSubmit}>
+        <>
             <TextField 
                 label="Username" 
                 variant = "outlined" 
@@ -222,9 +223,9 @@ const SignupComponent = props => {
                 helperText = {formError.confirmPassword}
             />
 
-            <Button variant="contained" color="primary" type = "submit">
+            <Button variant="contained" color="primary" onClick={handleSubmit}>
                 {requested ? "Creating account..." : "Create Account"}
             </Button>
-        </form>
+        </>
     );
 }

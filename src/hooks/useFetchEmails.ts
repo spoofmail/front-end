@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { SpoofmailAPI } from "../App"
+import { EMAILS_PER_PAGE } from "../components/protected/Emails"
 import Address from "../types/Address"
 import Email from "../types/Email"
 
@@ -7,11 +8,14 @@ interface FetchEmailsProps {
     userId: Email['address_id']
     page: number
     addressIDList: Array<Address['id']>
+    size?: number
 }
 export default function useFetchEmails({
     userId,
     page,
     addressIDList,
+
+    size = EMAILS_PER_PAGE,
 }: FetchEmailsProps) {
     const networkCounterRef = useRef(0)
 
@@ -34,7 +38,7 @@ export default function useFetchEmails({
                 
                 SpoofmailAPI.getAllEmails({
                     page,
-                    perPage: 25,
+                    perPage: size,
                 })
                 .then(response => {
                     if (active && myNumber === networkCounterRef.current) {

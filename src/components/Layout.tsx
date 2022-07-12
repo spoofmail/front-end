@@ -20,6 +20,7 @@ const OutletContainer = styled('div')(() => ({
     flexGrow: 1,
     backgroundColor: 'var(--background-color)',
     overflow: 'auto',
+    display: 'flex',
 }))
 
 const drawerWidth = 150;
@@ -50,6 +51,9 @@ export default () => {
     const location = useLocation()
     const navigate = useNavigate()
 
+    console.log(location.pathname)
+    console.log(location.pathname.split('/'))
+
     return (
         <RootLayoutContainer>
             <Header />
@@ -61,16 +65,16 @@ export default () => {
             { isMobile && (
                 <BottomNavigation
                 showLabels
-                value={location.pathname}
+                value={location.pathname.split('/')[1]}
                 onChange={(event: any, newValue: string) => {
                     console.log(newValue)
                     if (newValue !== location.pathname)
-                        navigate(newValue)
+                        navigate('/' + newValue)
                 }}
             >
-                <BottomNavigationAction value="/emails" label="Emails" icon={<MailIcon />} />
-                <BottomNavigationAction value="/addresses" label="Addresses" icon={<AlternateEmailIcon />} />
-                <BottomNavigationAction value="/settings" label="Settings" icon={<SettingsIcon />} />
+                <BottomNavigationAction value="emails" label="Emails" icon={<MailIcon />} />
+                <BottomNavigationAction value="addresses" label="Addresses" icon={<AlternateEmailIcon />} />
+                <BottomNavigationAction value="settings" label="Settings" icon={<SettingsIcon />} />
             </BottomNavigation>
             ) }
         </RootLayoutContainer>

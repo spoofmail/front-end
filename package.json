@@ -26,6 +26,8 @@
     "html-to-react": "^1.4.8",
     "lodash": "^4.17.21",
     "lodash.template": "^4.5.0",
+    "qrcode": "^1.5.0",
+    "qrcode.react": "^3.0.1",
     "react": "^18.0.0",
     "react-animate-height": "^2.1.1",
     "react-dom": "^18.0.0",

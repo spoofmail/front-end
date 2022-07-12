@@ -11,8 +11,9 @@ import CreateSpoofmailAPI from './api/spoofmail'
 import Emails from './components/protected/Emails';
 import createCustomTheme from './util/createCustomTheme';
 import NotFound404 from './components/protected/404'
-import './CSS/App.css';
 import Addresses from './components/protected/Addresses';
+import Settings from './components/protected/Settings';
+import MFA, { MFAActivateForm } from './components/protected/SettingsPages/MFA';
 
 function getAuthToken() {
     return localStorage.getItem('user_token')
@@ -54,13 +55,19 @@ function App() {
             <ThemeProvider theme={theme}>
                 <BrowserRouter>
                     <Routes>
-                        <Route path="/login" element={<Login />} />
+                        <Route path="/login" element={<Login beLogin={true} />} />
+                        <Route path="/register" element={<Login beLogin={false} />} />
+                        <Route path="/signup" element={<Login beLogin={false} />} />
                         <Route element={<Layout />}>
                             <Route index element={<Protected component={<Emails />} />} />
                             <Route path="/" element={<Protected component={<Emails />} />} />
                             <Route path="/emails" element={<Protected component={<Emails />} />} />
                             <Route path="/addresses" element={<Protected component={<Addresses />} />} />
-                            <Route path="/settings" element={<Protected component={<NotFound404 />} />} />
+                            <Route path='/settings'>
+                                <Route index element={<Protected component={<Settings />} />} />
+                                <Route path="/settings/mfa" element={<Protected component={<MFA />} />} />
+                                <Route path="/settings/mfa/activate" element={<Protected component={<MFAActivateForm />} />} />
+                            </Route>
                             <Route path="*" element={<Protected component={<NotFound404 />} />} />
                         </Route>
                     </Routes>

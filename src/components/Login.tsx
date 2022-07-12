@@ -9,8 +9,8 @@ import { useDispatch } from "react-redux";
 import { setUser } from "../redux/user/userSlice";
 import { useLocation, useNavigate } from "react-router";
 
-export default () => {
-    const [isLogin, setIsLogin] = useState(true);
+export default ({ beLogin }: { beLogin: boolean }) => {
+    const [isLogin, setIsLogin] = useState<boolean>(beLogin);
 
     return (
         <>

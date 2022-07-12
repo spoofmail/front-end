@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { SpoofmailAPI } from "../App"
 import useDebounce from "./useDebounce"
+import { EMAILS_PER_PAGE } from "../components/protected/Emails"
 
 interface UseQueryByEmailTextOptions {
     query: string
@@ -10,7 +11,7 @@ interface UseQueryByEmailTextOptions {
 export default function useQueryByEmailText({
     query = '',
     from = 0,
-    size = 25,
+    size = EMAILS_PER_PAGE,
 }: UseQueryByEmailTextOptions) {
     const currentNetworkCall = useRef(0)
 
@@ -18,10 +19,11 @@ export default function useQueryByEmailText({
     const [total, setTotal] = useState(0)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
+    const [debouncing, setDebouncing] = useState(false)
 
     const debouncedInput = useDebounce({
         debouncedInput: query,
-        debounceTimeout: 250,
+        debounceTimeout: 1500,
     })
 
     useEffect(() => {
@@ -66,12 +68,18 @@ export default function useQueryByEmailText({
         }
     }, [debouncedInput, from, size])
 
+    useEffect(() => {
+        setDebouncing(debouncedInput !== query)
+    }, [debouncedInput, query])
+
     return useMemo(() => ({
+        debouncing,
         emails,
         total,
         loading,
         error,
     }), [
+        debouncing,
         emails,
         total,
         loading,

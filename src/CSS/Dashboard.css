@@ -35,7 +35,7 @@
 
 .dash-container .emails .header {
     display: flex;
-    padding: 25px;
+    flex-direction: column;
     justify-content: space-between;
     background-color: var(--primary-color);
     box-shadow: 0 0 6px black;
@@ -43,10 +43,6 @@
 
 .dash-container .title button .MuiButton-label {
     font-size: 1rem;
-}
-
-.MuiPaper-elevation1 {
-    background-color: var(--background-color) !important
 }
 
 .MuiIconButton-root {

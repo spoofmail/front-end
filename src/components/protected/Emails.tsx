@@ -1,17 +1,33 @@
 import { useState, useEffect } from "react";
 
-import CircularProgress from '@mui/material/CircularProgress';
-
-import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
-import { fetchAddresses } from "../../redux/address/addressSlice";
-import useWebsocket from "../../hooks/useWebsocket";
-import useFetchEmails from "../../hooks/useFetchEmails";
-import EmailList from "./EmailList";
 import { Search, Cancel, Edit } from "@mui/icons-material";
-import { Paper, IconButton, InputBase, Button, Fab } from "@mui/material";
+import { Paper, IconButton, InputBase, Button, Fab, styled } from "@mui/material";
+
+import EmailList from "./EmailList";
+import Email from "../../types/Email";
+import SearchInput from "../SearchInput";
+
+import { fetchAddresses } from "../../redux/address/addressSlice";
+import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
+
+import useFetchEmails from "../../hooks/useFetchEmails";
 import useQueryByEmailText from "../../hooks/useQueryByEmailText";
-import "../../CSS/Dashboard.css"
 import useMobileQuery from "../../hooks/useMobileQuery";
+
+export const EMAILS_PER_PAGE = 500
+
+const RootContainer = styled('div')(() => ({
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+}))
+
+const EmailContainer = styled('div')(() => ({
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+}))
 
 export default () => {
     const isMobile = useMobileQuery(598)
@@ -22,8 +38,12 @@ export default () => {
     const addressStatus = useAppSelector(({ address }) => address.status)
     const addressIDList = useAppSelector(({ address }) => address.ids)
 
+    const [editMode, setEditMode] = useState(false)
     const [queryText, setQueryText] = useState('')
     const [page, setPage] = useState(1)
+    const [filterOpen, setFilterOpen] = useState(false)
+
+    const [selected, setSelected] = useState(new Set())
 
     /*const handleWebsocketEvent = (ev: MessageEvent<any>) => {
         console.log(ev)
@@ -60,67 +80,54 @@ export default () => {
         userId,
         page,
         addressIDList,
+        size: EMAILS_PER_PAGE,
     })
 
     const {
+        debouncing,
         emails,
         total: queryTotal,
         error: queryError,
         loading: queryLoading,
     } = useQueryByEmailText({
         query: queryText,
-        from: (page - 1) * 25,
-        size: 25,
+        from: (page - 1) * EMAILS_PER_PAGE,
+        size: EMAILS_PER_PAGE,
     })
 
-    const _renderLoading = () => {
-        if (addressesLoading) {
-            return (
-                <div className="loading-container">
-                    <CircularProgress size={60} color="primary" />
-                    <h1 style={{ color: 'var(--font-color)' }}>Addresses Loading</h1>
-                </div>
-            )
-        } else if (addressStatus === 'error') {
-            return (
-                <div className="loading-container">
-                    <h1 style={{ color: 'var(--font-color)' }}>An error occurred while fetching your addresses</h1>
-                </div>
-            )
+    const handleSelect = (id: Email['id']) => {
+        if (selected.has(id)) {
+            selected.delete(id)
+        } else {
+            selected.add(id)
         }
+
+        setSelected(new Set(Array.from(selected)))
     }
 
     return (
-        <div className="dash-container">
-            <div className="title">
-                <h1>Emails</h1>
-            </div>
+        <RootContainer>
 
-            <div className="emails">
-                <div className="header">
-                    <Paper elevation={1} style={{ display: 'flex', flexGrow: 1, }}>
-                        <IconButton disableFocusRipple disableTouchRipple size="large">
-                            <Search />
-                        </IconButton>
-                        <InputBase
-                            value={queryText}
-                            onChange={(e) => setQueryText(e.target.value)}
-                            placeholder="Search"
-                            sx={{ flexGrow: 1, }}
-                        />
-                        <IconButton disableFocusRipple disableTouchRipple onClick={() => setQueryText('')} size="large">
-                            <Cancel />
-                        </IconButton>
-                    </Paper>
-
-                    { !isMobile && <Button variant="contained" color="primary" onClick={_ => (true)} style={{ marginLeft: '15px', }}>Send Email</Button> }
-                    { isMobile && (
-                        <Fab color="primary" variant="extended" aria-label="Add Address" sx={{ position: 'absolute', right: 10, bottom: 66 }}>
-                            <Edit />
-                            Compose
-                        </Fab>
-                    ) }
-                </div>
+            <EmailContainer>
+                <SearchInput 
+                    value={queryText}
+                    onChange={(e) => setQueryText(e.target.value)}
+                    onClear={() => setQueryText('')}
+                    inputAdornment={
+                        <>
+                            { !isMobile && <Button variant="contained" color="primary" onClick={_ => (true)} style={{ marginLeft: '15px', }}>Send Email</Button> }
+                        </>
+                    }
+                    filters
+                    filterOpen={filterOpen}
+                    onFilterOpenChange={(open) => setFilterOpen(open)}
+                />
+                { isMobile && (
+                    <Fab color="primary" variant="extended" aria-label="Add Address" sx={{ position: 'absolute', right: 10, bottom: 66 }}>
+                        <Edit />
+                        Compose
+                    </Fab>
+                ) }
                 {
                     (error || queryError) && (
                         <h1 className="error" style={{ color: 'red' }}>{error}</h1>
@@ -129,37 +136,49 @@ export default () => {
                 {
                     queryText === '' && !error && (
                         data.length === 0 ? (
-                            <span style={{ marginTop: 15, color: 'var(--font-color)', width: '100%' }}>No Emails yet</span>
+                            <div style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                <span style={{ color: 'var(--font-color)' }}>No Emails yet</span>
+                            </div>
                         ): (
                             <EmailList
                                 emails={data}
                                 currentPage={page}
                                 totalResults={total}
-                                perPage={25}
+                                perPage={EMAILS_PER_PAGE}
                                 onPageChange={page => { setPage(page) }}
-                                onSelect={id => { }}
+                                onSelect={handleSelect}
+                                selected={id => selected.has(id)}
+                                editMode={editMode}
+                                setEditMode={setEditMode}
+                                loading={loading}
                             />
                         )
                     )
                 }
                 {
-                    queryText !== '' && !queryError && (
+                    queryText !== '' && !queryError && !queryLoading && !debouncing && (
                         emails.length === 0 ? (
-                            <span style={{ marginTop: 15, color: 'var(--font-color)', width: '100%' }}>No Emails found matching your criteria</span>
+                            <div style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                <span style={{ color: 'var(--font-color)' }}>No Emails found matching your criteria.</span>
+                            </div>
                         ): (
                             <EmailList
                                 emails={emails}
                                 currentPage={page}
                                 totalResults={queryTotal}
-                                perPage={25}
+                                perPage={EMAILS_PER_PAGE}
                                 onPageChange={page => { setPage(page) }}
-                                onSelect={id => { }}
+                                onSelect={handleSelect}
+                                selected={id => selected.has(id)}
+                                editMode={editMode}
+                                setEditMode={setEditMode}
+                                loading={queryLoading}
                             />
                         )
                     )
                 }
-            </div>
-        </div>
+            </EmailContainer>
+        </RootContainer>
     );
 }
 

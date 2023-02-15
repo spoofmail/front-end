@@ -20,7 +20,7 @@ export default (props) => {
     }, [context.emailMap, props.addEmail])
 
     const connectWebsocket = () => {
-        websocket.current = new WebSocket(`wss://spoofmail-lambda.herokuapp.com/ws?token=${cookies.get("token")}`)
+        websocket.current = new WebSocket(`wss://spoofmail-us.herokuapp.com/ws?token=${cookies.get("token")}`)
         websocket.current.onopen = () => {
             context.setWebsocketOpen(true)
             setIntervalState(setInterval(() => {
